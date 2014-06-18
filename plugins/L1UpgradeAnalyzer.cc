@@ -218,7 +218,69 @@ l1t::L1UpgradeAnalyzer::beginJob()
 
 // ------------ method called once each job just after ending the event loop  ------------
 void
-l1t::L1UpgradeAnalyzer::endJob(){}
+l1t::L1UpgradeAnalyzer::endJob()
+{
+  delete jet_hwPt;
+  delete jet_hwEta;
+  delete jet_hwPhi;
+  delete jet_hwQual;
+  delete jet_hwIso;
+
+  delete jet_pt;
+  delete jet_eta;
+  delete jet_phi;
+
+  delete tau_hwPt;
+  delete tau_hwEta;
+  delete tau_hwPhi;
+  delete tau_hwQual;
+  delete tau_hwIso;
+
+  delete tau_pt;
+  delete tau_eta;
+  delete tau_phi;
+
+  delete egamma_hwPt;
+  delete egamma_hwEta;
+  delete egamma_hwPhi;
+  delete egamma_hwQual;
+  delete egamma_hwIso;
+
+  delete egamma_pt;
+  delete egamma_eta;
+  delete egamma_phi;
+
+  delete etsum_hwPt;
+  delete etsum_hwEta;
+  delete etsum_hwPhi;
+  delete etsum_hwQual;
+  delete etsum_hwIso;
+  delete etsum_type;
+
+  delete etsum_pt;
+  delete etsum_eta;
+  delete etsum_phi;
+
+  delete hfringsum_hwPt;
+  delete hfringsum_hwEta;
+  delete hfringsum_hwPhi;
+  delete hfringsum_hwQual;
+  delete hfringsum_hwIso;
+
+  delete hfringsum_pt;
+  delete hfringsum_eta;
+  delete hfringsum_phi;
+
+  delete hfbitcount_hwPt;
+  delete hfbitcount_hwEta;
+  delete hfbitcount_hwPhi;
+  delete hfbitcount_hwQual;
+  delete hfbitcount_hwIso;
+
+  delete hfbitcount_pt;
+  delete hfbitcount_eta;
+  delete hfbitcount_phi;
+}
 
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
 void
