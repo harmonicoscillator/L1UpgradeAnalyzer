@@ -10,7 +10,9 @@
 
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/ServiceRegistry/interface/Service.h"
+#include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include "FWCore/Framework/interface/ESHandle.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
@@ -26,19 +28,21 @@
 #include "DataFormats/L1Trigger/interface/HFRingSum.h"
 #include "DataFormats/L1Trigger/interface/HFBitCount.h"
 
+#include "TTree.h"
+
 namespace l1t {
 
   class L1UpgradeAnalyzer : public edm::EDAnalyzer {
   public:
     explicit L1UpgradeAnalyzer(const edm::ParameterSet& ps);
-    ~L1UpgradeAnalyzer();
+    virtual ~L1UpgradeAnalyzer();
 
     static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
 
   private:
-      virtual void beginJob() override;
-      virtual void analyze(edm::Event&, const edm::EventSetup&) override;
-      virtual void endJob() override;
+      virtual void beginJob();
+      virtual void analyze(const edm::Event&, const edm::EventSetup&);
+      virtual void endJob();
 
       //virtual void beginRun(edm::Run const&, edm::EventSetup const&) override;
       //virtual void endRun(edm::Run const&, edm::EventSetup const&) override;
@@ -59,7 +63,7 @@ namespace l1t {
 
       int event;
       int run;
-      int lumi;
+      //int lumi;
 
       int nJet;
       int *jet_hwPt;

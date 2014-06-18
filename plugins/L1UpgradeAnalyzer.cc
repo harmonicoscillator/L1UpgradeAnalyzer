@@ -22,7 +22,7 @@ l1t::L1UpgradeAnalyzer::~L1UpgradeAnalyzer() {}
 
 // ------------ method called to produce the data  ------------
 void
-l1t::L1UpgradeAnalyzer::analyze(edm::Event& iEvent, const edm::EventSetup& iSetup)
+l1t::L1UpgradeAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
   // boilerplate
   edm::Handle<l1t::EGammaBxCollection> egammas;
@@ -45,7 +45,7 @@ l1t::L1UpgradeAnalyzer::analyze(edm::Event& iEvent, const edm::EventSetup& iSetu
   // Begin analysis
   event = iEvent.id().event();
   run = iEvent.id().run();
-  lumi = iEvent.id().lumi();
+  //lumi = iEvent.id().lumi();
 
   nJet = 0;
   nTau = 0;
@@ -59,36 +59,92 @@ l1t::L1UpgradeAnalyzer::analyze(edm::Event& iEvent, const edm::EventSetup& iSetu
     for(l1t::EGammaBxCollection::const_iterator itEGamma = egammas->begin(bx);
 	itEGamma != egammas->end(bx); ++itEGamma)
     {
+      egamma_hwPt[nEgamma] = itEGamma->hwPt();
+      egamma_hwEta[nEgamma] = itEGamma->hwEta();
+      egamma_hwPhi[nEgamma] = itEGamma->hwPhi();
+      egamma_hwQual[nEgamma] = itEGamma->hwQual();
+      egamma_hwIso[nEgamma] = itEGamma->hwIso();
+      egamma_pt[nEgamma] = itEGamma->pt();
+      egamma_eta[nEgamma] = itEGamma->eta();
+      egamma_phi[nEgamma] = itEGamma->phi();
+      
       nEgamma++;
     }
 
     for(l1t::TauBxCollection::const_iterator itTau = taus->begin(bx);
 	itTau != taus->end(bx); ++itTau)
     {
+      tau_hwPt[nTau] = itTau->hwPt();
+      tau_hwEta[nTau] = itTau->hwEta();
+      tau_hwPhi[nTau] = itTau->hwPhi();
+      tau_hwQual[nTau] = itTau->hwQual();
+      tau_hwIso[nTau] = itTau->hwIso();
+      tau_pt[nTau] = itTau->pt();
+      tau_eta[nTau] = itTau->eta();
+      tau_phi[nTau] = itTau->phi();
+
       nTau++;
     }
 
     for(l1t::JetBxCollection::const_iterator itJet = jets->begin(bx);
 	itJet != jets->end(bx); ++itJet)
     {
+      jet_hwPt[nJet] = itJet->hwPt();
+      jet_hwEta[nJet] = itJet->hwEta();
+      jet_hwPhi[nJet] = itJet->hwPhi();
+      jet_hwQual[nJet] = itJet->hwQual();
+      jet_hwIso[nJet] = itJet->hwIso();
+      jet_pt[nJet] = itJet->pt();
+      jet_eta[nJet] = itJet->eta();
+      jet_phi[nJet] = itJet->phi();
+
       nJet++;
     }
 
     for(l1t::EtSumBxCollection::const_iterator itEtSum = etsums->begin(bx);
 	itEtSum != etsums->end(bx); ++itEtSum)
     {
+      etsum_hwPt[nEtsum] = itEtSum->hwPt();
+      etsum_hwEta[nEtsum] = itEtSum->hwEta();
+      etsum_hwPhi[nEtsum] = itEtSum->hwPhi();
+      etsum_hwQual[nEtsum] = itEtSum->hwQual();
+      etsum_hwIso[nEtsum] = itEtSum->hwIso();
+      etsum_pt[nEtsum] = itEtSum->pt();
+      etsum_eta[nEtsum] = itEtSum->eta();
+      etsum_phi[nEtsum] = itEtSum->phi();
+
+      etsum_type[nEtsum] = itEtSum->getType();
+
       nEtsum++;
     }
 
     for(l1t::HFRingSumBxCollection::const_iterator itHFRingSum = hfringsums->begin(bx);
 	itHFRingSum != hfringsums->end(bx); ++itHFRingSum)
     {
+      hfringsum_hwPt[nHFringsum] = itHFRingSum->hwPt();
+      hfringsum_hwEta[nHFringsum] = itHFRingSum->hwEta();
+      hfringsum_hwPhi[nHFringsum] = itHFRingSum->hwPhi();
+      hfringsum_hwQual[nHFringsum] = itHFRingSum->hwQual();
+      hfringsum_hwIso[nHFringsum] = itHFRingSum->hwIso();
+      hfringsum_pt[nHFringsum] = itHFRingSum->pt();
+      hfringsum_eta[nHFringsum] = itHFRingSum->eta();
+      hfringsum_phi[nHFringsum] = itHFRingSum->phi();
+
       nHFringsum++;
     }
 
     for(l1t::HFBitCountBxCollection::const_iterator itHFBitCount = hfbitcounts->begin(bx);
 	itHFBitCount != hfbitcounts->end(bx); ++itHFBitCount)
     {
+      hfbitcount_hwPt[nHFbitcount] = itHFBitCount->hwPt();
+      hfbitcount_hwEta[nHFbitcount] = itHFBitCount->hwEta();
+      hfbitcount_hwPhi[nHFbitcount] = itHFBitCount->hwPhi();
+      hfbitcount_hwQual[nHFbitcount] = itHFBitCount->hwQual();
+      hfbitcount_hwIso[nHFbitcount] = itHFBitCount->hwIso();
+      hfbitcount_pt[nHFbitcount] = itHFBitCount->pt();
+      hfbitcount_eta[nHFbitcount] = itHFBitCount->eta();
+      hfbitcount_phi[nHFbitcount] = itHFBitCount->phi();
+
       nHFbitcount++;
     }
   }
@@ -104,7 +160,7 @@ l1t::L1UpgradeAnalyzer::beginJob()
 
   UpgradeTree->Branch("event",&event,"event/I");
   UpgradeTree->Branch("run", &run, "run/I");
-  UpgradeTree->Branch("lumi", &lumi, "lumi/I");
+  //UpgradeTree->Branch("lumi", &lumi, "lumi/I");
 
   const unsigned int MAXSIZE = 1000;
 
