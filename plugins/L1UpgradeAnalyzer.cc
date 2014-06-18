@@ -24,6 +24,7 @@ l1t::L1UpgradeAnalyzer::~L1UpgradeAnalyzer() {}
 void
 l1t::L1UpgradeAnalyzer::analyze(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
+  // boilerplate
   edm::Handle<l1t::EGammaBxCollection> egammas;
   edm::Handle<l1t::TauBxCollection> taus;
   edm::Handle<l1t::JetBxCollection> jets;
@@ -41,38 +42,58 @@ l1t::L1UpgradeAnalyzer::analyze(edm::Event& iEvent, const edm::EventSetup& iSetu
   int firstBX = egammas->getFirstBX();
   int lastBX = egammas->getLastBX();
 
+  // Begin analysis
+  event = iEvent.id().event();
+  run = iEvent.id().run();
+  lumi = iEvent.id().lumi();
+
+  nJet = 0;
+  nTau = 0;
+  nEgamma = 0;
+  nEtsum = 0;
+  nHFringsum = 0;
+  nHFbitcount = 0;
+
   for(int bx = firstBX; bx <= lastBX; ++bx)
   {
     for(l1t::EGammaBxCollection::const_iterator itEGamma = egammas->begin(bx);
 	itEGamma != egammas->end(bx); ++itEGamma)
     {
+      nEgamma++;
     }
 
     for(l1t::TauBxCollection::const_iterator itTau = taus->begin(bx);
 	itTau != taus->end(bx); ++itTau)
     {
+      nTau++;
     }
 
     for(l1t::JetBxCollection::const_iterator itJet = jets->begin(bx);
 	itJet != jets->end(bx); ++itJet)
     {
+      nJet++;
     }
 
     for(l1t::EtSumBxCollection::const_iterator itEtSum = etsums->begin(bx);
 	itEtSum != etsums->end(bx); ++itEtSum)
     {
+      nEtsum++;
     }
 
     for(l1t::HFRingSumBxCollection::const_iterator itHFRingSum = hfringsums->begin(bx);
 	itHFRingSum != hfringsums->end(bx); ++itHFRingSum)
     {
+      nHFringsum++;
     }
 
     for(l1t::HFBitCountBxCollection::const_iterator itHFBitCount = hfbitcounts->begin(bx);
 	itHFBitCount != hfbitcounts->end(bx); ++itHFBitCount)
     {
+      nHFbitcount++;
     }
   }
+
+  UpgradeTree->Fill();
 }
 
 // ------------ method called once each job just before starting event loop  ------------
