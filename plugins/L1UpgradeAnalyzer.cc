@@ -14,8 +14,7 @@ l1t::L1UpgradeAnalyzer::L1UpgradeAnalyzer(const edm::ParameterSet& ps) {
   TauToken_ = consumes<l1t::TauBxCollection>(ps.getParameter<edm::InputTag>("InputCollection"));
   JetToken_ = consumes<l1t::JetBxCollection>(ps.getParameter<edm::InputTag>("InputCollection"));
   EtSumToken_ = consumes<l1t::EtSumBxCollection>(ps.getParameter<edm::InputTag>("InputCollection"));
-  HFRingSumToken_ = consumes<l1t::HFRingSumBxCollection>(ps.getParameter<edm::InputTag>("InputCollection"));
-  HFBitCountToken_ = consumes<l1t::HFBitCountBxCollection>(ps.getParameter<edm::InputTag>("InputCollection"));
+  CaloSpareToken_ = consumes<l1t::CaloSpareBxCollection>(ps.getParameter<edm::InputTag>("InputCollection"));
 }
 
 l1t::L1UpgradeAnalyzer::~L1UpgradeAnalyzer() {}
@@ -29,15 +28,13 @@ l1t::L1UpgradeAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
   edm::Handle<l1t::TauBxCollection> taus;
   edm::Handle<l1t::JetBxCollection> jets;
   edm::Handle<l1t::EtSumBxCollection> etsums;
-  edm::Handle<l1t::HFRingSumBxCollection> hfringsums;
-  edm::Handle<l1t::HFBitCountBxCollection> hfbitcounts;
+  edm::Handle<l1t::CaloSpareBxCollection> calospares;
 
   iEvent.getByToken(EGammaToken_, egammas);
   iEvent.getByToken(TauToken_, taus);
   iEvent.getByToken(JetToken_, jets);
   iEvent.getByToken(EtSumToken_, etsums);
-  iEvent.getByToken(HFRingSumToken_, hfringsums);
-  iEvent.getByToken(HFBitCountToken_, hfbitcounts);
+  iEvent.getByToken(CaloSpareToken_, calospares);
 
   int firstBX = egammas->getFirstBX();
   int lastBX = egammas->getLastBX();
@@ -51,8 +48,8 @@ l1t::L1UpgradeAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
   nTau = 0;
   nEgamma = 0;
   nEtsum = 0;
-  nHFringsum = 0;
-  nHFbitcount = 0;
+  nCentrality = 0;
+  nV2 = 0;
 
   for(int bx = firstBX; bx <= lastBX; ++bx)
   {
@@ -67,7 +64,7 @@ l1t::L1UpgradeAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
       egamma_pt[nEgamma] = itEGamma->pt();
       egamma_eta[nEgamma] = itEGamma->eta();
       egamma_phi[nEgamma] = itEGamma->phi();
-      
+
       nEgamma++;
     }
 
@@ -118,34 +115,35 @@ l1t::L1UpgradeAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
       nEtsum++;
     }
 
-    for(l1t::HFRingSumBxCollection::const_iterator itHFRingSum = hfringsums->begin(bx);
-	itHFRingSum != hfringsums->end(bx); ++itHFRingSum)
+    for(l1t::CaloSpareBxCollection::const_iterator itCaloSpare = calospares->begin(bx);
+	itCaloSpare != calospares->end(bx); ++itCaloSpare)
     {
-      hfringsum_hwPt[nHFringsum] = itHFRingSum->hwPt();
-      hfringsum_hwEta[nHFringsum] = itHFRingSum->hwEta();
-      hfringsum_hwPhi[nHFringsum] = itHFRingSum->hwPhi();
-      hfringsum_hwQual[nHFringsum] = itHFRingSum->hwQual();
-      hfringsum_hwIso[nHFringsum] = itHFRingSum->hwIso();
-      hfringsum_pt[nHFringsum] = itHFRingSum->pt();
-      hfringsum_eta[nHFringsum] = itHFRingSum->eta();
-      hfringsum_phi[nHFringsum] = itHFRingSum->phi();
+      if(l1t::CaloSpare::CaloSpareType::V2 == itCaloSpare->getType())
+      {
+	v2_hwPt[nV2] = itCaloSpare->hwPt();
+	v2_hwEta[nV2] = itCaloSpare->hwEta();
+	v2_hwPhi[nV2] = itCaloSpare->hwPhi();
+	v2_hwQual[nV2] = itCaloSpare->hwQual();
+	v2_hwIso[nV2] = itCaloSpare->hwIso();
+	v2_pt[nV2] = itCaloSpare->pt();
+	v2_eta[nV2] = itCaloSpare->eta();
+	v2_phi[nV2] = itCaloSpare->phi();
 
-      nHFringsum++;
-    }
+	nV2++;
+      }
+      else if (l1t::CaloSpare::CaloSpareType::Centrality == itCaloSpare->getType())
+      {
+	centrality_hwPt[nCentrality] = itCaloSpare->hwPt();
+	centrality_hwEta[nCentrality] = itCaloSpare->hwEta();
+	centrality_hwPhi[nCentrality] = itCaloSpare->hwPhi();
+	centrality_hwQual[nCentrality] = itCaloSpare->hwQual();
+	centrality_hwIso[nCentrality] = itCaloSpare->hwIso();
+	centrality_pt[nCentrality] = itCaloSpare->pt();
+	centrality_eta[nCentrality] = itCaloSpare->eta();
+	centrality_phi[nCentrality] = itCaloSpare->phi();
 
-    for(l1t::HFBitCountBxCollection::const_iterator itHFBitCount = hfbitcounts->begin(bx);
-	itHFBitCount != hfbitcounts->end(bx); ++itHFBitCount)
-    {
-      hfbitcount_hwPt[nHFbitcount] = itHFBitCount->hwPt();
-      hfbitcount_hwEta[nHFbitcount] = itHFBitCount->hwEta();
-      hfbitcount_hwPhi[nHFbitcount] = itHFBitCount->hwPhi();
-      hfbitcount_hwQual[nHFbitcount] = itHFBitCount->hwQual();
-      hfbitcount_hwIso[nHFbitcount] = itHFBitCount->hwIso();
-      hfbitcount_pt[nHFbitcount] = itHFBitCount->pt();
-      hfbitcount_eta[nHFbitcount] = itHFBitCount->eta();
-      hfbitcount_phi[nHFbitcount] = itHFBitCount->phi();
-
-      nHFbitcount++;
+	nCentrality++;
+      }
     }
   }
 
@@ -205,25 +203,25 @@ l1t::L1UpgradeAnalyzer::beginJob()
   etsum_eta = new double[MAXSIZE];
   etsum_phi = new double[MAXSIZE];
 
-  hfringsum_hwPt = new int[MAXSIZE];
-  hfringsum_hwEta = new int[MAXSIZE];
-  hfringsum_hwPhi = new int[MAXSIZE];
-  hfringsum_hwQual = new int[MAXSIZE];
-  hfringsum_hwIso = new int[MAXSIZE];
+  v2_hwPt = new int[MAXSIZE];
+  v2_hwEta = new int[MAXSIZE];
+  v2_hwPhi = new int[MAXSIZE];
+  v2_hwQual = new int[MAXSIZE];
+  v2_hwIso = new int[MAXSIZE];
 
-  hfringsum_pt = new double[MAXSIZE];
-  hfringsum_eta = new double[MAXSIZE];
-  hfringsum_phi = new double[MAXSIZE];
+  v2_pt = new double[MAXSIZE];
+  v2_eta = new double[MAXSIZE];
+  v2_phi = new double[MAXSIZE];
 
-  hfbitcount_hwPt = new int[MAXSIZE];
-  hfbitcount_hwEta = new int[MAXSIZE];
-  hfbitcount_hwPhi = new int[MAXSIZE];
-  hfbitcount_hwQual = new int[MAXSIZE];
-  hfbitcount_hwIso = new int[MAXSIZE];
+  centrality_hwPt = new int[MAXSIZE];
+  centrality_hwEta = new int[MAXSIZE];
+  centrality_hwPhi = new int[MAXSIZE];
+  centrality_hwQual = new int[MAXSIZE];
+  centrality_hwIso = new int[MAXSIZE];
 
-  hfbitcount_pt = new double[MAXSIZE];
-  hfbitcount_eta = new double[MAXSIZE];
-  hfbitcount_phi = new double[MAXSIZE];
+  centrality_pt = new double[MAXSIZE];
+  centrality_eta = new double[MAXSIZE];
+  centrality_phi = new double[MAXSIZE];
 
   UpgradeTree->Branch("nJet",&nJet,"nJet/I");
   UpgradeTree->Branch("jet_hwPt",jet_hwPt,"jet_hwPt[nJet]/I");
@@ -270,27 +268,27 @@ l1t::L1UpgradeAnalyzer::beginJob()
   UpgradeTree->Branch("etsum_eta",etsum_eta,"etsum_eta[nEtsum]/D");
   UpgradeTree->Branch("etsum_phi",etsum_phi,"etsum_phi[nEtsum]/D");
 
-  UpgradeTree->Branch("nHFringsum",&nHFringsum,"nHFringsum/I");
-  UpgradeTree->Branch("hfringsum_hwPt",hfringsum_hwPt,"hfringsum_hwPt[nHFringsum]/I");
-  UpgradeTree->Branch("hfringsum_hwEta",hfringsum_hwEta,"hfringsum_hwEta[nHFringsum]/I");
-  UpgradeTree->Branch("hfringsum_hwPhi",hfringsum_hwPhi,"hfringsum_hwPhi[nHFringsum]/I");
-  UpgradeTree->Branch("hfringsum_hwQual",hfringsum_hwQual,"hfringsum_hwQual[nHFringsum]/I");
-  UpgradeTree->Branch("hfringsum_hwIso",hfringsum_hwIso,"hfringsum_hwIso[nHFringsum]/I");
+  UpgradeTree->Branch("nV2",&nV2,"nV2/I");
+  UpgradeTree->Branch("v2_hwPt",v2_hwPt,"v2_hwPt[nV2]/I");
+  UpgradeTree->Branch("v2_hwEta",v2_hwEta,"v2_hwEta[nV2]/I");
+  UpgradeTree->Branch("v2_hwPhi",v2_hwPhi,"v2_hwPhi[nV2]/I");
+  UpgradeTree->Branch("v2_hwQual",v2_hwQual,"v2_hwQual[nV2]/I");
+  UpgradeTree->Branch("v2_hwIso",v2_hwIso,"v2_hwIso[nV2]/I");
 
-  UpgradeTree->Branch("hfringsum_pt",hfringsum_pt,"hfringsum_pt[nHFringsum]/D");
-  UpgradeTree->Branch("hfringsum_eta",hfringsum_eta,"hfringsum_eta[nHFringsum]/D");
-  UpgradeTree->Branch("hfringsum_phi",hfringsum_phi,"hfringsum_phi[nHFringsum]/D");
+  UpgradeTree->Branch("v2_pt",v2_pt,"v2_pt[nV2]/D");
+  UpgradeTree->Branch("v2_eta",v2_eta,"v2_eta[nV2]/D");
+  UpgradeTree->Branch("v2_phi",v2_phi,"v2_phi[nV2]/D");
 
-  UpgradeTree->Branch("nHFbitcount",&nHFbitcount,"nHFbitcount/I");
-  UpgradeTree->Branch("hfbitcount_hwPt",hfbitcount_hwPt,"hfbitcount_hwPt[nHFbitcount]/I");
-  UpgradeTree->Branch("hfbitcount_hwEta",hfbitcount_hwEta,"hfbitcount_hwEta[nHFbitcount]/I");
-  UpgradeTree->Branch("hfbitcount_hwPhi",hfbitcount_hwPhi,"hfbitcount_hwPhi[nHFbitcount]/I");
-  UpgradeTree->Branch("hfbitcount_hwQual",hfbitcount_hwQual,"hfbitcount_hwQual[nHFbitcount]/I");
-  UpgradeTree->Branch("hfbitcount_hwIso",hfbitcount_hwIso,"hfbitcount_hwIso[nHFbitcount]/I");
+  UpgradeTree->Branch("nCentrality",&nCentrality,"nCentrality/I");
+  UpgradeTree->Branch("centrality_hwPt",centrality_hwPt,"centrality_hwPt[nCentrality]/I");
+  UpgradeTree->Branch("centrality_hwEta",centrality_hwEta,"centrality_hwEta[nCentrality]/I");
+  UpgradeTree->Branch("centrality_hwPhi",centrality_hwPhi,"centrality_hwPhi[nCentrality]/I");
+  UpgradeTree->Branch("centrality_hwQual",centrality_hwQual,"centrality_hwQual[nCentrality]/I");
+  UpgradeTree->Branch("centrality_hwIso",centrality_hwIso,"centrality_hwIso[nCentrality]/I");
 
-  UpgradeTree->Branch("hfbitcount_pt",hfbitcount_pt,"hfbitcount_pt[nHFbitcount]/D");
-  UpgradeTree->Branch("hfbitcount_eta",hfbitcount_eta,"hfbitcount_eta[nHFbitcount]/D");
-  UpgradeTree->Branch("hfbitcount_phi",hfbitcount_phi,"hfbitcount_phi[nHFbitcount]/D");
+  UpgradeTree->Branch("centrality_pt",centrality_pt,"centrality_pt[nCentrality]/D");
+  UpgradeTree->Branch("centrality_eta",centrality_eta,"centrality_eta[nCentrality]/D");
+  UpgradeTree->Branch("centrality_phi",centrality_phi,"centrality_phi[nCentrality]/D");
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
@@ -338,25 +336,25 @@ l1t::L1UpgradeAnalyzer::endJob()
   delete etsum_eta;
   delete etsum_phi;
 
-  delete hfringsum_hwPt;
-  delete hfringsum_hwEta;
-  delete hfringsum_hwPhi;
-  delete hfringsum_hwQual;
-  delete hfringsum_hwIso;
+  delete v2_hwPt;
+  delete v2_hwEta;
+  delete v2_hwPhi;
+  delete v2_hwQual;
+  delete v2_hwIso;
 
-  delete hfringsum_pt;
-  delete hfringsum_eta;
-  delete hfringsum_phi;
+  delete v2_pt;
+  delete v2_eta;
+  delete v2_phi;
 
-  delete hfbitcount_hwPt;
-  delete hfbitcount_hwEta;
-  delete hfbitcount_hwPhi;
-  delete hfbitcount_hwQual;
-  delete hfbitcount_hwIso;
+  delete centrality_hwPt;
+  delete centrality_hwEta;
+  delete centrality_hwPhi;
+  delete centrality_hwQual;
+  delete centrality_hwIso;
 
-  delete hfbitcount_pt;
-  delete hfbitcount_eta;
-  delete hfbitcount_phi;
+  delete centrality_pt;
+  delete centrality_eta;
+  delete centrality_phi;
 }
 
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------

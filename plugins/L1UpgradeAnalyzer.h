@@ -25,8 +25,7 @@
 #include "DataFormats/L1Trigger/interface/Tau.h"
 #include "DataFormats/L1Trigger/interface/Jet.h"
 #include "DataFormats/L1Trigger/interface/EtSum.h"
-#include "DataFormats/L1Trigger/interface/HFRingSum.h"
-#include "DataFormats/L1Trigger/interface/HFBitCount.h"
+#include "DataFormats/L1Trigger/interface/CaloSpare.h"
 
 #include "TTree.h"
 
@@ -55,8 +54,7 @@ namespace l1t {
       edm::EDGetToken TauToken_;
       edm::EDGetToken JetToken_;
       edm::EDGetToken EtSumToken_;
-      edm::EDGetToken HFRingSumToken_;
-      edm::EDGetToken HFBitCountToken_;
+      edm::EDGetToken CaloSpareToken_;
 
       edm::Service<TFileService> fs;
       TTree *UpgradeTree;
@@ -110,27 +108,27 @@ namespace l1t {
       double *etsum_eta;
       double *etsum_phi;
 
-      int nHFringsum;
-      int *hfringsum_hwPt;
-      int *hfringsum_hwEta;
-      int *hfringsum_hwPhi;
-      int *hfringsum_hwQual;
-      int *hfringsum_hwIso;
+      int nCentrality;
+      int *centrality_hwPt;
+      int *centrality_hwEta;
+      int *centrality_hwPhi;
+      int *centrality_hwQual;
+      int *centrality_hwIso;
 
-      double *hfringsum_pt;
-      double *hfringsum_eta;
-      double *hfringsum_phi;
+      double *centrality_pt;
+      double *centrality_eta;
+      double *centrality_phi;
 
-      int nHFbitcount;
-      int *hfbitcount_hwPt;
-      int *hfbitcount_hwEta;
-      int *hfbitcount_hwPhi;
-      int *hfbitcount_hwQual;
-      int *hfbitcount_hwIso;
+      int nV2;
+      int *v2_hwPt;
+      int *v2_hwEta;
+      int *v2_hwPhi;
+      int *v2_hwQual;
+      int *v2_hwIso;
 
-      double *hfbitcount_pt;
-      double *hfbitcount_eta;
-      double *hfbitcount_phi;
+      double *v2_pt;
+      double *v2_eta;
+      double *v2_phi;
   };
 }
 
