@@ -26,6 +26,7 @@
 #include "DataFormats/L1Trigger/interface/Jet.h"
 #include "DataFormats/L1Trigger/interface/EtSum.h"
 #include "DataFormats/L1Trigger/interface/CaloSpare.h"
+#include "DataFormats/L1TCalorimeter/interface/CaloRegion.h"
 
 #include "TTree.h"
 
@@ -55,6 +56,7 @@ namespace l1t {
       edm::EDGetToken JetToken_;
       edm::EDGetToken EtSumToken_;
       edm::EDGetToken CaloSpareToken_;
+      edm::EDGetToken RegionToken_;
 
       edm::Service<TFileService> fs;
       TTree *UpgradeTree;
@@ -129,6 +131,12 @@ namespace l1t {
       double *v2_pt;
       double *v2_eta;
       double *v2_phi;
+
+      int nRegions;
+      int *region_hwPt;
+      int *region_hwEta;
+      int *region_hwPhi;
+      int *region_tauVeto;
   };
 }
 

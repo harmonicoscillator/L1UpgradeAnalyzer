@@ -10,11 +10,12 @@
 #include "FWCore/Framework/interface/ESHandle.h"
 
 l1t::L1UpgradeAnalyzer::L1UpgradeAnalyzer(const edm::ParameterSet& ps) {
-  EGammaToken_ = consumes<l1t::EGammaBxCollection>(ps.getParameter<edm::InputTag>("InputCollection"));
-  TauToken_ = consumes<l1t::TauBxCollection>(ps.getParameter<edm::InputTag>("InputCollection"));
-  JetToken_ = consumes<l1t::JetBxCollection>(ps.getParameter<edm::InputTag>("InputCollection"));
-  EtSumToken_ = consumes<l1t::EtSumBxCollection>(ps.getParameter<edm::InputTag>("InputCollection"));
-  CaloSpareToken_ = consumes<l1t::CaloSpareBxCollection>(ps.getParameter<edm::InputTag>("InputCollection"));
+  EGammaToken_ = consumes<l1t::EGammaBxCollection>(ps.getParameter<edm::InputTag>("InputLayer2Collection"));
+  TauToken_ = consumes<l1t::TauBxCollection>(ps.getParameter<edm::InputTag>("InputLayer2Collection"));
+  JetToken_ = consumes<l1t::JetBxCollection>(ps.getParameter<edm::InputTag>("InputLayer2Collection"));
+  EtSumToken_ = consumes<l1t::EtSumBxCollection>(ps.getParameter<edm::InputTag>("InputLayer2Collection"));
+  CaloSpareToken_ = consumes<l1t::CaloSpareBxCollection>(ps.getParameter<edm::InputTag>("InputLayer2Collection"));
+  RegionToken_ = consumes<l1t::CaloRegionBxCollection>(ps.getParameter<edm::InputTag>("InputLayer1Collection"));
 }
 
 l1t::L1UpgradeAnalyzer::~L1UpgradeAnalyzer() {}
@@ -29,12 +30,14 @@ l1t::L1UpgradeAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
   edm::Handle<l1t::JetBxCollection> jets;
   edm::Handle<l1t::EtSumBxCollection> etsums;
   edm::Handle<l1t::CaloSpareBxCollection> calospares;
+  edm::Handle<l1t::CaloRegionBxCollection> regions;
 
   iEvent.getByToken(EGammaToken_, egammas);
   iEvent.getByToken(TauToken_, taus);
   iEvent.getByToken(JetToken_, jets);
   iEvent.getByToken(EtSumToken_, etsums);
   iEvent.getByToken(CaloSpareToken_, calospares);
+  iEvent.getByToken(RegionToken_, regions);
 
   int firstBX = egammas->getFirstBX();
   int lastBX = egammas->getLastBX();
@@ -50,6 +53,7 @@ l1t::L1UpgradeAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
   nEtsum = 0;
   nCentrality = 0;
   nV2 = 0;
+  nRegions = 0;
 
   for(int bx = firstBX; bx <= lastBX; ++bx)
   {
@@ -145,6 +149,17 @@ l1t::L1UpgradeAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
 	nCentrality++;
       }
     }
+
+    for(l1t::CaloRegionBxCollection::const_iterator itCaloRegion = regions->begin(bx);
+	itCaloRegion != regions->end(bx); ++itCaloRegion)
+    {
+      region_hwPt[nRegions] = itCaloRegion->hwPt();
+      region_hwEta[nRegions] = itCaloRegion->hwEta();
+      region_hwPhi[nRegions] = itCaloRegion->hwPhi();
+      region_tauVeto[nRegions] = itCaloRegion->hwQual();
+
+      nRegions++;
+    }
   }
 
   UpgradeTree->Fill();
@@ -223,6 +238,11 @@ l1t::L1UpgradeAnalyzer::beginJob()
   centrality_eta = new double[MAXSIZE];
   centrality_phi = new double[MAXSIZE];
 
+  region_hwPt = new int[MAXSIZE];
+  region_hwEta = new int[MAXSIZE];
+  region_hwPhi = new int[MAXSIZE];
+  region_tauVeto = new int[MAXSIZE];
+
   UpgradeTree->Branch("nJet",&nJet,"nJet/I");
   UpgradeTree->Branch("jet_hwPt",jet_hwPt,"jet_hwPt[nJet]/I");
   UpgradeTree->Branch("jet_hwEta",jet_hwEta,"jet_hwEta[nJet]/I");
@@ -289,6 +309,13 @@ l1t::L1UpgradeAnalyzer::beginJob()
   UpgradeTree->Branch("centrality_pt",centrality_pt,"centrality_pt[nCentrality]/D");
   UpgradeTree->Branch("centrality_eta",centrality_eta,"centrality_eta[nCentrality]/D");
   UpgradeTree->Branch("centrality_phi",centrality_phi,"centrality_phi[nCentrality]/D");
+
+  UpgradeTree->Branch("nRegions",&nRegions,"nRegions/I");
+  UpgradeTree->Branch("region_hwPt",region_hwPt,"region_hwPt[nRegions]/I");
+  UpgradeTree->Branch("region_hwEta",region_hwEta,"region_hwEta[nRegions]/I");
+  UpgradeTree->Branch("region_hwPhi",region_hwPhi,"region_hwPhi[nRegions]/I");
+  UpgradeTree->Branch("region_tauVeto",region_tauVeto,"region_tauVeto[nRegions]/I");
+
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
@@ -355,6 +382,11 @@ l1t::L1UpgradeAnalyzer::endJob()
   delete centrality_pt;
   delete centrality_eta;
   delete centrality_phi;
+
+  delete region_hwPt;
+  delete region_hwEta;
+  delete region_hwPhi;
+  delete region_tauVeto;
 }
 
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------

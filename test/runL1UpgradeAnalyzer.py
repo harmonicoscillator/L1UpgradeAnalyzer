@@ -29,7 +29,8 @@ process.TFileService = cms.Service("TFileService",
 )
 
 process.L1UpgradeAnalyzer = cms.EDAnalyzer('l1t::L1UpgradeAnalyzer',
-                                           InputCollection = cms.InputTag("caloStage1FinalDigis")
+                                           InputLayer2Collection = cms.InputTag("caloStage1FinalDigis"),
+                                           InputLayer1Collection = cms.InputTag("rctUpgradeFormatDigis")
 )
 
 process.p = cms.Path(process.L1UpgradeAnalyzer)
