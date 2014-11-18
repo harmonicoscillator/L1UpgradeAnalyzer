@@ -27,6 +27,7 @@
 #include "DataFormats/L1Trigger/interface/EtSum.h"
 #include "DataFormats/L1Trigger/interface/CaloSpare.h"
 #include "DataFormats/L1TCalorimeter/interface/CaloRegion.h"
+#include "DataFormats/L1TCalorimeter/interface/CaloEmCand.h"
 
 #include "TTree.h"
 

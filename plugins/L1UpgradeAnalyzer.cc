@@ -11,7 +11,7 @@
 
 l1t::L1UpgradeAnalyzer::L1UpgradeAnalyzer(const edm::ParameterSet& ps) {
   EGammaToken_ = consumes<l1t::EGammaBxCollection>(ps.getParameter<edm::InputTag>("InputLayer2Collection"));
-  TauToken_ = consumes<l1t::TauBxCollection>(ps.getParameter<edm::InputTag>("InputLayer2Collection"));
+  TauToken_ = consumes<l1t::TauBxCollection>(ps.getParameter<edm::InputTag>("InputLayer2TauCollection"));
   JetToken_ = consumes<l1t::JetBxCollection>(ps.getParameter<edm::InputTag>("InputLayer2Collection"));
   EtSumToken_ = consumes<l1t::EtSumBxCollection>(ps.getParameter<edm::InputTag>("InputLayer2Collection"));
   CaloSpareToken_ = consumes<l1t::CaloSpareBxCollection>(ps.getParameter<edm::InputTag>("InputLayer2Collection"));

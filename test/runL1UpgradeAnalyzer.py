@@ -30,6 +30,7 @@ process.TFileService = cms.Service("TFileService",
 
 process.L1UpgradeAnalyzer = cms.EDAnalyzer('l1t::L1UpgradeAnalyzer',
                                            InputLayer2Collection = cms.InputTag("caloStage1FinalDigis"),
+                                           InputLayer2TauCollection = cms.InputTag("caloStage1FinalDigis:rlxTaus"),
                                            InputLayer1Collection = cms.InputTag("rctUpgradeFormatDigis")
 )
 
