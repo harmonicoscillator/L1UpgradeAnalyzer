@@ -99,6 +99,11 @@ l1t::L1UpgradeAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
       jet_eta[nJet] = itJet->eta();
       jet_phi[nJet] = itJet->phi();
 
+      const bool verbose = true;
+      if(verbose)
+      {
+	std::cout << "pt: " << itJet->pt() << " eta: " << itJet->eta() << " phi: " << itJet->phi() << std::endl;
+      }
       nJet++;
     }
 
