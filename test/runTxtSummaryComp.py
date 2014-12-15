@@ -48,12 +48,12 @@ process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:startup', '')
 # enable debug message logging for our modules
 process.MessageLogger = cms.Service(
     "MessageLogger",
-    threshold  = cms.untracked.string('DEBUG'),
+    threshold  = cms.untracked.string('WARNING'),
     categories = cms.untracked.vstring('*'),
 #    l1t   = cms.untracked.PSet(
 #	threshold  = cms.untracked.string('DEBUG')
 #    ),
-    debugModules = cms.untracked.vstring('*'),
+#    debugModules = cms.untracked.vstring('*'),
 #        'stage1Raw',
 #        'caloStage1Digis'
 #    ),
@@ -72,8 +72,10 @@ process.TFileService.fileName = cms.string('l1t.root')
 process.load('EventFilter.L1TRawToDigi.stage1MP7BufferRaw_cfi')
 process.stage1Raw.nFramesOffset    = cms.untracked.int32(0)
 process.stage1Raw.nFramesLatency   = cms.untracked.int32(90)
-process.stage1Raw.rxFile = cms.untracked.string("/afs/cern.ch/work/r/richard/public/mp7dumps/dataCaptureMP7_101214_237/rx_summary.txt")
-process.stage1Raw.txFile = cms.untracked.string("/afs/cern.ch/work/r/richard/public/mp7dumps/dataCaptureMP7_101214_237/tx_summary.txt")
+#process.stage1Raw.rxFile = cms.untracked.string("/afs/cern.ch/work/r/richard/public/mp7dumps/dataCaptureMP7_101214_237/rx_summary.txt")
+#process.stage1Raw.txFile = cms.untracked.string("/afs/cern.ch/work/r/richard/public/mp7dumps/dataCaptureMP7_101214_237/tx_summary.txt")
+process.stage1Raw.rxFile = cms.untracked.string("/afs/cern.ch/work/r/richard/public/mp7dumps/test1_1s_ECALcstPattern/datasummary_832/rx_summary.txt")
+process.stage1Raw.txFile = cms.untracked.string("/afs/cern.ch/work/r/richard/public/mp7dumps/test1_1s_ECALcstPattern/datasummary_832/tx_summary.txt")
 
 
 
@@ -98,14 +100,14 @@ process.simCaloStage1Digis.CaloEmCands = cms.InputTag("caloStage1Digis")
 process.L1JetComparator = cms.EDAnalyzer("l1t::L1JetComparator",
                                          JetCollection1 = cms.InputTag("caloStage1Digis"),
                                          JetCollection2 = cms.InputTag("simCaloStage1Digis"),
-                                         RegionCollection = cms.InputTag("stage1Raw")
+                                         RegionCollection = cms.InputTag("caloStage1Digis")
                                          )
 
 
 # Path and EndPath definitions
 process.path = cms.Path(
     process.stage1Raw
-    +process.dumpRaw
+    #+process.dumpRaw
     +process.caloStage1Digis
     +process.simCaloStage1Digis
     +process.L1JetComparator

@@ -126,8 +126,17 @@ l1t::L1JetComparator::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   iEvent.getByToken(JetToken2_, jets2);
   iEvent.getByToken(RegionToken_, regions);
 
-  int firstBX = jets1->getFirstBX();
-  int lastBX = jets1->getLastBX();
+  // int firstBX = jets1->getFirstBX();
+  // int lastBX = jets1->getLastBX();
+
+  // int firstBX2 = jets2->getFirstBX();
+  // int lastBX2 = jets2->getLastBX();
+
+  // if ((firstBX != firstBX2) || (lastBX != lastBX2) )
+  // {
+  //   std::cout << "BX do not match between input samples, returning." << std::endl;
+  //   return;
+  // }
 
   // Begin analysis
   event = iEvent.id().event();
@@ -138,7 +147,8 @@ l1t::L1JetComparator::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   nJet2 = 0;
   nRegions = 0;
 
-  for(int bx = firstBX; bx <= lastBX; ++bx)
+  //for(int bx = firstBX; bx <= lastBX; ++bx)
+  int bx = 0;
   {
     for(l1t::JetBxCollection::const_iterator itJet = jets1->begin(bx);
 	itJet != jets1->end(bx); ++itJet)
