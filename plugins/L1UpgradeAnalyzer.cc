@@ -16,6 +16,7 @@ l1t::L1UpgradeAnalyzer::L1UpgradeAnalyzer(const edm::ParameterSet& ps) {
   EtSumToken_ = consumes<l1t::EtSumBxCollection>(ps.getParameter<edm::InputTag>("InputLayer2Collection"));
   CaloSpareToken_ = consumes<l1t::CaloSpareBxCollection>(ps.getParameter<edm::InputTag>("InputLayer2CaloSpareCollection"));
   RegionToken_ = consumes<l1t::CaloRegionBxCollection>(ps.getParameter<edm::InputTag>("InputLayer1Collection"));
+  EGToken_ = consumes<l1t::CaloEmCandBxCollection>(ps.getParameter<edm::InputTag>("InputLayer1Collection"));
 }
 
 l1t::L1UpgradeAnalyzer::~L1UpgradeAnalyzer() {}
@@ -31,6 +32,7 @@ l1t::L1UpgradeAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
   edm::Handle<l1t::EtSumBxCollection> etsums;
   edm::Handle<l1t::CaloSpareBxCollection> calospares;
   edm::Handle<l1t::CaloRegionBxCollection> regions;
+  edm::Handle<l1t::CaloEmCandBxCollection> egcands;
 
   iEvent.getByToken(EGammaToken_, egammas);
   iEvent.getByToken(TauToken_, taus);
@@ -38,6 +40,7 @@ l1t::L1UpgradeAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
   iEvent.getByToken(EtSumToken_, etsums);
   iEvent.getByToken(CaloSpareToken_, calospares);
   iEvent.getByToken(RegionToken_, regions);
+  iEvent.getByToken(EGToken_, egcands);
 
   int firstBX = egammas->getFirstBX();
   int lastBX = egammas->getLastBX();
@@ -45,7 +48,7 @@ l1t::L1UpgradeAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
   // Begin analysis
   event = iEvent.id().event();
   run = iEvent.id().run();
-  //lumi = iEvent.id().lumi();
+  lumi = iEvent.id().luminosityBlock();
 
   nJet = 0;
   nTau = 0;
@@ -54,6 +57,7 @@ l1t::L1UpgradeAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
   nCentrality = 0;
   nV2 = 0;
   nRegions = 0;
+  nEG = 0;
 
   for(int bx = firstBX; bx <= lastBX; ++bx)
   {
@@ -165,6 +169,18 @@ l1t::L1UpgradeAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
 
       nRegions++;
     }
+
+    for(l1t::CaloEmCandBxCollection::const_iterator itEGcand = egcands->begin(bx);
+	itEGcand != egcands->end(bx); ++itEGcand)
+    {
+      eg_hwPt[nEG] = itEGcand->hwPt();
+      eg_hwEta[nEG] = itEGcand->hwEta();
+      eg_hwPhi[nEG] = itEGcand->hwPhi();
+      eg_hwQual[nEG] = itEGcand->hwQual();
+      eg_hwIso[nEG] = itEGcand->hwIso();
+
+      nEG++;
+    }
   }
 
   UpgradeTree->Fill();
@@ -178,7 +194,7 @@ l1t::L1UpgradeAnalyzer::beginJob()
 
   UpgradeTree->Branch("event",&event,"event/I");
   UpgradeTree->Branch("run", &run, "run/I");
-  //UpgradeTree->Branch("lumi", &lumi, "lumi/I");
+  UpgradeTree->Branch("lumi", &lumi, "lumi/I");
 
   const unsigned int MAXSIZE = 1000;
 
@@ -247,6 +263,12 @@ l1t::L1UpgradeAnalyzer::beginJob()
   region_hwEta = new int[MAXSIZE];
   region_hwPhi = new int[MAXSIZE];
   region_tauVeto = new int[MAXSIZE];
+
+  eg_hwPt = new int[MAXSIZE];
+  eg_hwEta = new int[MAXSIZE];
+  eg_hwPhi = new int[MAXSIZE];
+  eg_hwQual = new int[MAXSIZE];
+  eg_hwIso = new int[MAXSIZE];
 
   UpgradeTree->Branch("nJet",&nJet,"nJet/I");
   UpgradeTree->Branch("jet_hwPt",jet_hwPt,"jet_hwPt[nJet]/I");
@@ -321,6 +343,12 @@ l1t::L1UpgradeAnalyzer::beginJob()
   UpgradeTree->Branch("region_hwPhi",region_hwPhi,"region_hwPhi[nRegions]/I");
   UpgradeTree->Branch("region_tauVeto",region_tauVeto,"region_tauVeto[nRegions]/I");
 
+  UpgradeTree->Branch("nEG",&nEG,"nEG/I");
+  UpgradeTree->Branch("eg_hwPt",eg_hwPt,"eg_hwPt[nEG]/I");
+  UpgradeTree->Branch("eg_hwEta",eg_hwEta,"eg_hwEta[nEG]/I");
+  UpgradeTree->Branch("eg_hwPhi",eg_hwPhi,"eg_hwPhi[nEG]/I");
+  UpgradeTree->Branch("eg_hwQual",eg_hwQual,"eg_hwQual[nEG]/I");
+  UpgradeTree->Branch("eg_hwIso",eg_hwIso,"eg_hwIso[nEG]/I");
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
@@ -392,6 +420,12 @@ l1t::L1UpgradeAnalyzer::endJob()
   delete region_hwEta;
   delete region_hwPhi;
   delete region_tauVeto;
+
+  delete eg_hwPt;
+  delete eg_hwEta;
+  delete eg_hwPhi;
+  delete eg_hwQual;
+  delete eg_hwIso;
 }
 
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------

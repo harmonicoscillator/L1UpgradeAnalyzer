@@ -58,13 +58,14 @@ namespace l1t {
       edm::EDGetToken EtSumToken_;
       edm::EDGetToken CaloSpareToken_;
       edm::EDGetToken RegionToken_;
+      edm::EDGetToken EGToken_;
 
       edm::Service<TFileService> fs;
       TTree *UpgradeTree;
 
       int event;
       int run;
-      //int lumi;
+      int lumi;
 
       int nJet;
       int *jet_hwPt;
@@ -138,6 +139,13 @@ namespace l1t {
       int *region_hwEta;
       int *region_hwPhi;
       int *region_tauVeto;
+
+      int nEG;
+      int *eg_hwPt;
+      int *eg_hwEta;
+      int *eg_hwPhi;
+      int *eg_hwQual;
+      int *eg_hwIso;
   };
 }
 
