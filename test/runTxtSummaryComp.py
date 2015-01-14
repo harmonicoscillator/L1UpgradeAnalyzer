@@ -13,7 +13,7 @@ process.load('Configuration.StandardSequences.EndOfProcess_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(10)
+    input = cms.untracked.int32(100)
 )
 
 # Input source
@@ -72,10 +72,10 @@ process.TFileService.fileName = cms.string('l1t.root')
 process.load('EventFilter.L1TRawToDigi.stage1MP7BufferRaw_cfi')
 process.stage1Raw.nFramesOffset    = cms.untracked.int32(0)
 process.stage1Raw.nFramesLatency   = cms.untracked.int32(90)
-#process.stage1Raw.rxFile = cms.untracked.string("/afs/cern.ch/work/r/richard/public/mp7dumps/dataCaptureMP7_101214_237/rx_summary.txt")
-#process.stage1Raw.txFile = cms.untracked.string("/afs/cern.ch/work/r/richard/public/mp7dumps/dataCaptureMP7_101214_237/tx_summary.txt")
-process.stage1Raw.rxFile = cms.untracked.string("/afs/cern.ch/work/r/richard/public/mp7dumps/test1_1s_ECALcstPattern/datasummary_832/rx_summary.txt")
-process.stage1Raw.txFile = cms.untracked.string("/afs/cern.ch/work/r/richard/public/mp7dumps/test1_1s_ECALcstPattern/datasummary_832/tx_summary.txt")
+process.stage1Raw.rxFile = cms.untracked.string("/afs/cern.ch/user/r/richard/EMULATOR/CMSSW_7_3_0_pre2/src/EventFilter/L1TRawToDigi/test/input/physicsevent/rx_summary.txt")
+process.stage1Raw.txFile = cms.untracked.string("/afs/cern.ch/user/r/richard/EMULATOR/CMSSW_7_3_0_pre2/src/EventFilter/L1TRawToDigi/test/input/physicsevent/tx_summary.txt")
+#process.stage1Raw.rxFile = cms.untracked.string("/afs/cern.ch/work/r/richard/public/mp7dumps/test1_1s_ECALcstPattern/datasummary_832/rx_summary.txt")
+#process.stage1Raw.txFile = cms.untracked.string("/afs/cern.ch/work/r/richard/public/mp7dumps/test1_1s_ECALcstPattern/datasummary_832/tx_summary.txt")
 
 
 
