@@ -145,6 +145,7 @@ namespace l1t {
       int *emcand_hwEta;
       int *emcand_hwPhi;
       int *emcand_hwIso;
+      int *emcand_hwQual;
   };
 }
 

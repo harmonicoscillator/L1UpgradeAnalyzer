@@ -177,6 +177,7 @@ l1t::L1UpgradeAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
       emcand_hwEta[nEMCands] = itCaloEmCand->hwEta();
       emcand_hwPhi[nEMCands] = itCaloEmCand->hwPhi();
       emcand_hwIso[nEMCands] = itCaloEmCand->hwIso();
+      emcand_hwQual[nEMCands] = itCaloEmCand->hwQual();
 
       nEMCands++;
     }
@@ -267,6 +268,7 @@ l1t::L1UpgradeAnalyzer::beginJob()
   emcand_hwEta = new int[MAXSIZE];
   emcand_hwPhi = new int[MAXSIZE];
   emcand_hwIso = new int[MAXSIZE];
+  emcand_hwQual = new int[MAXSIZE];
 
   UpgradeTree->Branch("nJet",&nJet,"nJet/I");
   UpgradeTree->Branch("jet_hwPt",jet_hwPt,"jet_hwPt[nJet]/I");
@@ -346,6 +348,7 @@ l1t::L1UpgradeAnalyzer::beginJob()
   UpgradeTree->Branch("emcand_hwEta",emcand_hwEta,"emcand_hwEta[nEMCands]/I");
   UpgradeTree->Branch("emcand_hwPhi",emcand_hwPhi,"emcand_hwPhi[nEMCands]/I");
   UpgradeTree->Branch("emcand_hwIso",emcand_hwIso,"emcand_hwIso[nEMCands]/I");
+  UpgradeTree->Branch("emcand_hwQual",emcand_hwQual, "emcand_hwQual[nEMCands]/I");
 
 }
 
@@ -423,6 +426,7 @@ l1t::L1UpgradeAnalyzer::endJob()
   delete emcand_hwEta;
   delete emcand_hwPhi;
   delete emcand_hwIso;
+  delete emcand_hwQual;
 }
 
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
