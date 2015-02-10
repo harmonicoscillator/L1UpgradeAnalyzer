@@ -18,7 +18,7 @@ process.maxEvents = cms.untracked.PSet(
 process.source = cms.Source("PoolSource",
     secondaryFileNames = cms.untracked.vstring(),
     fileNames = cms.untracked.vstring(
-        'file:/afs/cern.ch/user/g/ginnocen/public/L1T_EDM_RCT.root'
+        'file:/afs/cern.ch/user/g/ginnocen/public/MP7testsP5/l1tCalo_2015_EDM.root'
     )
 )
 
@@ -31,8 +31,10 @@ process.TFileService = cms.Service("TFileService",
 process.L1UpgradeAnalyzer = cms.EDAnalyzer('l1t::L1UpgradeAnalyzer',
                                            InputLayer2Collection = cms.InputTag("caloStage1Digis"),
                                            InputLayer2TauCollection = cms.InputTag("caloStage1Digis:rlxTaus"),
-                                           InputLayer1Collection = cms.InputTag("caloStage1Digis"),
-                                           InputLayer2CaloSpareCollection = cms.InputTag("caloStage1Digis:HFRingSums")
+                                           InputLayer2IsoTauCollection = cms.InputTag("caloStage1Digis:isoTaus"),
+                                           InputLayer1Collection = cms.InputTag("None"),
+                                           InputLayer2CaloSpareCollection = cms.InputTag("caloStage1Digis:HFRingSums"),
+                                           legacyRCTDigis = cms.InputTag("caloStage1Digis")
 )
 
 process.p = cms.Path(process.L1UpgradeAnalyzer)

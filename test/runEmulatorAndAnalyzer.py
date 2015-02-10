@@ -12,7 +12,7 @@ process.load('Configuration.Geometry.GeometryIdeal_cff')
 process.load('FWCore.MessageService.MessageLogger_cfi')
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(100)
+    input = cms.untracked.int32(91)
     )
 
 # Input source
@@ -63,8 +63,10 @@ process.TFileService = cms.Service("TFileService",
 process.L1UpgradeAnalyzer = cms.EDAnalyzer('l1t::L1UpgradeAnalyzer',
                                            InputLayer2Collection = cms.InputTag("simCaloStage1FinalDigis"),
                                            InputLayer2TauCollection = cms.InputTag("simCaloStage1FinalDigis:rlxTaus"),
+                                           InputLayer2IsoTauCollection = cms.InputTag("simCaloStage1FinalDigis:isoTaus"),
                                            InputLayer2CaloSpareCollection = cms.InputTag("simCaloStage1FinalDigis:HFRingSums"),
-                                           InputLayer1Collection = cms.InputTag("simRctUpgradeFormatDigis")
+                                           InputLayer1Collection = cms.InputTag("simRctUpgradeFormatDigis"),
+                                           legacyRCTDigis = cms.InputTag("simRctDigis")
 )
 
 process.p2 = cms.Path(process.L1UpgradeAnalyzer)

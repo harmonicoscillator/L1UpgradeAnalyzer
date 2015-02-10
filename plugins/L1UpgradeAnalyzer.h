@@ -29,6 +29,11 @@
 #include "DataFormats/L1TCalorimeter/interface/CaloRegion.h"
 #include "DataFormats/L1TCalorimeter/interface/CaloEmCand.h"
 
+#include "DataFormats/L1CaloTrigger/interface/L1CaloEmCand.h"
+#include "DataFormats/L1CaloTrigger/interface/L1CaloRegion.h"
+#include "DataFormats/L1CaloTrigger/interface/L1CaloCollections.h"
+
+
 #include "TTree.h"
 
 namespace l1t {
@@ -54,11 +59,18 @@ namespace l1t {
 
       edm::EDGetToken EGammaToken_;
       edm::EDGetToken TauToken_;
+      edm::EDGetToken isoTauToken_;
       edm::EDGetToken JetToken_;
       edm::EDGetToken EtSumToken_;
       edm::EDGetToken CaloSpareToken_;
+
       edm::EDGetToken RegionToken_;
       edm::EDGetToken EmCandToken_;
+
+      edm::EDGetToken legacyRegionToken_;
+      edm::EDGetToken legacyEmCandToken_;
+
+      bool doLayer1 = true;
 
       edm::Service<TFileService> fs;
       TTree *UpgradeTree;
@@ -73,6 +85,7 @@ namespace l1t {
       int *jet_hwPhi;
       int *jet_hwQual;
       int *jet_hwIso;
+      int *jet_bx;
 
       double *jet_pt;
       double *jet_eta;
@@ -84,10 +97,23 @@ namespace l1t {
       int *tau_hwPhi;
       int *tau_hwQual;
       int *tau_hwIso;
+      int *tau_bx;
 
       double *tau_pt;
       double *tau_eta;
       double *tau_phi;
+
+      int nIsotau;
+      int *isotau_hwPt;
+      int *isotau_hwEta;
+      int *isotau_hwPhi;
+      int *isotau_hwQual;
+      int *isotau_hwIso;
+      int *isotau_bx;
+
+      double *isotau_pt;
+      double *isotau_eta;
+      double *isotau_phi;
 
       int nEgamma;
       int *egamma_hwPt;
@@ -95,6 +121,7 @@ namespace l1t {
       int *egamma_hwPhi;
       int *egamma_hwQual;
       int *egamma_hwIso;
+      int *egamma_bx;
 
       double *egamma_pt;
       double *egamma_eta;
@@ -107,38 +134,30 @@ namespace l1t {
       int *etsum_hwQual;
       int *etsum_hwIso;
       int *etsum_type;
+      int *etsum_bx;
 
       double *etsum_pt;
       double *etsum_eta;
       double *etsum_phi;
 
-      int nCentrality;
-      int *centrality_hwPt;
-      int *centrality_hwEta;
-      int *centrality_hwPhi;
-      int *centrality_hwQual;
-      int *centrality_hwIso;
+      int nHfring;
+      int *hfring_hwPt;
+      int *hfring_hwEta;
+      int *hfring_hwPhi;
+      int *hfring_hwQual;
+      int *hfring_hwIso;
+      int *hfring_bx;
 
-      double *centrality_pt;
-      double *centrality_eta;
-      double *centrality_phi;
-
-      int nV2;
-      int *v2_hwPt;
-      int *v2_hwEta;
-      int *v2_hwPhi;
-      int *v2_hwQual;
-      int *v2_hwIso;
-
-      double *v2_pt;
-      double *v2_eta;
-      double *v2_phi;
+      double *hfring_pt;
+      double *hfring_eta;
+      double *hfring_phi;
 
       int nRegions;
       int *region_hwPt;
       int *region_hwEta;
       int *region_hwPhi;
       int *region_tauVeto;
+      int *region_bx;
 
       int nEMCands;
       int *emcand_hwPt;
@@ -146,6 +165,29 @@ namespace l1t {
       int *emcand_hwPhi;
       int *emcand_hwIso;
       int *emcand_hwQual;
+      int *emcand_bx;
+
+      int nLegacyRegions;
+      int *legacyregion_raw;
+      int *legacyregion_et;
+      int *legacyregion_gctEta;
+      int *legacyregion_gctPhi;
+      int *legacyregion_crate;
+      int *legacyregion_card;
+      int *legacyregion_index;
+      int *legacyregion_bx;
+
+      int nLegacyEmCands;
+      int *legacyemcand_raw;
+      int *legacyemcand_rank;
+      int *legacyemcand_regionEta;
+      int *legacyemcand_regionPhi;
+      int *legacyemcand_crate;
+      int *legacyemcand_card;
+      int *legacyemcand_index;
+      int *legacyemcand_iso;
+      int *legacyemcand_bx;
+
   };
 }
 
