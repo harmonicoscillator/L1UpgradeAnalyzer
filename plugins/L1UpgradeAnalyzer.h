@@ -71,6 +71,9 @@ namespace l1t {
       edm::EDGetToken legacyEmCandToken_;
 
       bool doLayer1 = true;
+      //bool doTaus = true;
+      //bool doIsoTaus = true;
+      //bool doLegacyRct = true;
 
       edm::Service<TFileService> fs;
       TTree *UpgradeTree;

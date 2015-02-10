@@ -65,9 +65,6 @@ l1t::L1UpgradeAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
   iEvent.getByToken(legacyRegionToken_, legacyregions);
   iEvent.getByToken(legacyEmCandToken_, legacyemcands);
 
-  int firstBX = egammas->getFirstBX();
-  int lastBX = egammas->getLastBX();
-
   // Begin analysis
   event = iEvent.id().event();
   run = iEvent.id().run();
@@ -86,7 +83,7 @@ l1t::L1UpgradeAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
   nLegacyRegions = 0;
   nLegacyEmCands = 0;
 
-  for(int bx = firstBX; bx <= lastBX; ++bx)
+  for(int bx = egammas->getFirstBX(); bx <= egammas->getLastBX(); ++bx)
   {
     for(l1t::EGammaBxCollection::const_iterator itEGamma = egammas->begin(bx);
 	itEGamma != egammas->end(bx); ++itEGamma)
@@ -103,7 +100,10 @@ l1t::L1UpgradeAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
 
       nEgamma++;
     }
+  }
 
+  for(int bx = taus->getFirstBX(); bx <= taus->getLastBX(); ++bx)
+  {
     for(l1t::TauBxCollection::const_iterator itTau = taus->begin(bx);
 	itTau != taus->end(bx); ++itTau)
     {
@@ -119,7 +119,10 @@ l1t::L1UpgradeAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
 
       nTau++;
     }
+  }
 
+  for(int bx = isotaus->getFirstBX(); bx <= isotaus->getLastBX(); ++bx)
+  {
     for(l1t::TauBxCollection::const_iterator itIsoTau = isotaus->begin(bx);
 	itIsoTau != isotaus->end(bx); ++itIsoTau)
     {
@@ -135,7 +138,10 @@ l1t::L1UpgradeAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
 
       nIsotau++;
     }
+  }
 
+  for(int bx = jets->getFirstBX(); bx <= jets->getLastBX(); ++bx)
+  {
     for(l1t::JetBxCollection::const_iterator itJet = jets->begin(bx);
 	itJet != jets->end(bx); ++itJet)
     {
@@ -156,7 +162,10 @@ l1t::L1UpgradeAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
       }
       nJet++;
     }
+  }
 
+  for(int bx = etsums->getFirstBX(); bx <= etsums->getLastBX(); ++bx)
+  {
     for(l1t::EtSumBxCollection::const_iterator itEtSum = etsums->begin(bx);
 	itEtSum != etsums->end(bx); ++itEtSum)
     {
@@ -174,39 +183,42 @@ l1t::L1UpgradeAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
 
       nEtsum++;
     }
+  }
 
-    // for(l1t::CaloSpareBxCollection::const_iterator itCaloSpare = calospares->begin(bx);
-    // 	itCaloSpare != calospares->end(bx); ++itCaloSpare)
-    // {
-    //   if(l1t::CaloSpare::CaloSpareType::V2 == itCaloSpare->getType())
-    //   {
-    // 	v2_hwPt[nV2] = itCaloSpare->hwPt();
-    // 	v2_hwEta[nV2] = itCaloSpare->hwEta();
-    // 	v2_hwPhi[nV2] = itCaloSpare->hwPhi();
-    // 	v2_hwQual[nV2] = itCaloSpare->hwQual();
-    // 	v2_hwIso[nV2] = itCaloSpare->hwIso();
-    // 	v2_pt[nV2] = itCaloSpare->pt();
-    // 	v2_eta[nV2] = itCaloSpare->eta();
-    // 	v2_phi[nV2] = itCaloSpare->phi();
+  // for(l1t::CaloSpareBxCollection::const_iterator itCaloSpare = calospares->begin(bx);
+  // 	itCaloSpare != calospares->end(bx); ++itCaloSpare)
+  // {
+  //   if(l1t::CaloSpare::CaloSpareType::V2 == itCaloSpare->getType())
+  //   {
+  // 	v2_hwPt[nV2] = itCaloSpare->hwPt();
+  // 	v2_hwEta[nV2] = itCaloSpare->hwEta();
+  // 	v2_hwPhi[nV2] = itCaloSpare->hwPhi();
+  // 	v2_hwQual[nV2] = itCaloSpare->hwQual();
+  // 	v2_hwIso[nV2] = itCaloSpare->hwIso();
+  // 	v2_pt[nV2] = itCaloSpare->pt();
+  // 	v2_eta[nV2] = itCaloSpare->eta();
+  // 	v2_phi[nV2] = itCaloSpare->phi();
 
-    // 	nV2++;
-    //   }
-    //   else if (l1t::CaloSpare::CaloSpareType::Centrality == itCaloSpare->getType())
-    //   {
-    // 	centrality_hwPt[nCentrality] = itCaloSpare->hwPt();
-    // 	centrality_hwEta[nCentrality] = itCaloSpare->hwEta();
-    // 	centrality_hwPhi[nCentrality] = itCaloSpare->hwPhi();
-    // 	centrality_hwQual[nCentrality] = itCaloSpare->hwQual();
-    // 	centrality_hwIso[nCentrality] = itCaloSpare->hwIso();
-    // 	centrality_pt[nCentrality] = itCaloSpare->pt();
-    // 	centrality_eta[nCentrality] = itCaloSpare->eta();
-    // 	centrality_phi[nCentrality] = itCaloSpare->phi();
+  // 	nV2++;
+  //   }
+  //   else if (l1t::CaloSpare::CaloSpareType::Centrality == itCaloSpare->getType())
+  //   {
+  // 	centrality_hwPt[nCentrality] = itCaloSpare->hwPt();
+  // 	centrality_hwEta[nCentrality] = itCaloSpare->hwEta();
+  // 	centrality_hwPhi[nCentrality] = itCaloSpare->hwPhi();
+  // 	centrality_hwQual[nCentrality] = itCaloSpare->hwQual();
+  // 	centrality_hwIso[nCentrality] = itCaloSpare->hwIso();
+  // 	centrality_pt[nCentrality] = itCaloSpare->pt();
+  // 	centrality_eta[nCentrality] = itCaloSpare->eta();
+  // 	centrality_phi[nCentrality] = itCaloSpare->phi();
 
-    // 	nCentrality++;
-    //   }
-    // }
+  // 	nCentrality++;
+  //   }
+  // }
 
-    if(doLayer1)
+  if(doLayer1)
+  {
+    for(int bx = regions->getFirstBX(); bx <= regions->getLastBX(); ++bx)
     {
       for(l1t::CaloRegionBxCollection::const_iterator itCaloRegion = regions->begin(bx);
 	  itCaloRegion != regions->end(bx); ++itCaloRegion)
@@ -219,7 +231,10 @@ l1t::L1UpgradeAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
 
 	nRegions++;
       }
+    }
 
+    for(int bx = emcands->getFirstBX(); bx <= emcands->getLastBX(); ++bx)
+    {
       for(l1t::CaloEmCandBxCollection::const_iterator itCaloEmCand = emcands->begin(bx);
 	  itCaloEmCand != emcands->end(bx); ++itCaloEmCand)
       {
@@ -234,6 +249,7 @@ l1t::L1UpgradeAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
       }
     }
   }
+
 
   for(std::vector<L1CaloRegion>::const_iterator rgn=legacyregions->begin(); rgn!=legacyregions->end(); ++rgn)
   {
