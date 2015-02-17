@@ -158,7 +158,9 @@ l1t::L1UpgradeAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
       const bool verbose = false;
       if(verbose)
       {
-	std::cout << "pt: " << itJet->pt() << " eta: " << itJet->eta() << " phi: " << itJet->phi() << std::endl;
+	//std::cout << "pt: " << itJet->pt() << " eta: " << itJet->eta() << " phi: " << itJet->phi() << std::endl;
+	uint32_t output = itJet->hwPt() + (itJet->hwEta() << 5) + (itJet->hwPhi() << 11);
+	std::cout << std::hex << std::setw(4) << std::setfill('0') << output << std::endl;
       }
       nJet++;
     }
