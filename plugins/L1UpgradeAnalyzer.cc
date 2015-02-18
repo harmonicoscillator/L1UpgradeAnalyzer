@@ -187,36 +187,29 @@ l1t::L1UpgradeAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
     }
   }
 
-  // for(l1t::CaloSpareBxCollection::const_iterator itCaloSpare = calospares->begin(bx);
-  // 	itCaloSpare != calospares->end(bx); ++itCaloSpare)
-  // {
-  //   if(l1t::CaloSpare::CaloSpareType::V2 == itCaloSpare->getType())
-  //   {
-  // 	v2_hwPt[nV2] = itCaloSpare->hwPt();
-  // 	v2_hwEta[nV2] = itCaloSpare->hwEta();
-  // 	v2_hwPhi[nV2] = itCaloSpare->hwPhi();
-  // 	v2_hwQual[nV2] = itCaloSpare->hwQual();
-  // 	v2_hwIso[nV2] = itCaloSpare->hwIso();
-  // 	v2_pt[nV2] = itCaloSpare->pt();
-  // 	v2_eta[nV2] = itCaloSpare->eta();
-  // 	v2_phi[nV2] = itCaloSpare->phi();
+  for(int bx = calospares->getFirstBX(); bx <= calospares->getLastBX(); ++bx)
+  {
+    for(l1t::CaloSpareBxCollection::const_iterator itCaloSpare = calospares->begin(bx);
+  	itCaloSpare != calospares->end(bx); ++itCaloSpare)
+    {
+      if(l1t::CaloSpare::CaloSpareType::HFRingSum == itCaloSpare->getType())
+      {
+  	hfring_hwPt[nHfring] = itCaloSpare->hwPt();
+  	hfring_hwEta[nHfring] = itCaloSpare->hwEta();
+  	hfring_hwPhi[nHfring] = itCaloSpare->hwPhi();
+  	hfring_hwQual[nHfring] = itCaloSpare->hwQual();
+  	hfring_hwIso[nHfring] = itCaloSpare->hwIso();
 
-  // 	nV2++;
-  //   }
-  //   else if (l1t::CaloSpare::CaloSpareType::Centrality == itCaloSpare->getType())
-  //   {
-  // 	centrality_hwPt[nCentrality] = itCaloSpare->hwPt();
-  // 	centrality_hwEta[nCentrality] = itCaloSpare->hwEta();
-  // 	centrality_hwPhi[nCentrality] = itCaloSpare->hwPhi();
-  // 	centrality_hwQual[nCentrality] = itCaloSpare->hwQual();
-  // 	centrality_hwIso[nCentrality] = itCaloSpare->hwIso();
-  // 	centrality_pt[nCentrality] = itCaloSpare->pt();
-  // 	centrality_eta[nCentrality] = itCaloSpare->eta();
-  // 	centrality_phi[nCentrality] = itCaloSpare->phi();
+  	hfring_pt[nHfring] = itCaloSpare->pt();
+  	hfring_eta[nHfring] = itCaloSpare->eta();
+  	hfring_phi[nHfring] = itCaloSpare->phi();
 
-  // 	nCentrality++;
-  //   }
-  // }
+	hfring_bx[nHfring] = bx;
+
+  	nHfring++;
+      }
+    }
+  }
 
   if(doLayer1)
   {
@@ -353,6 +346,17 @@ l1t::L1UpgradeAnalyzer::beginJob()
   etsum_eta = new double[MAXSIZE];
   etsum_phi = new double[MAXSIZE];
 
+  hfring_hwPt = new int[MAXSIZE];
+  hfring_hwEta = new int[MAXSIZE];
+  hfring_hwPhi = new int[MAXSIZE];
+  hfring_hwQual = new int[MAXSIZE];
+  hfring_hwIso = new int[MAXSIZE];
+  hfring_bx = new int[MAXSIZE];
+
+  hfring_pt = new double[MAXSIZE];
+  hfring_eta = new double[MAXSIZE];
+  hfring_phi = new double[MAXSIZE];
+
   region_hwPt = new int[MAXSIZE];
   region_hwEta = new int[MAXSIZE];
   region_hwPhi = new int[MAXSIZE];
@@ -446,6 +450,19 @@ l1t::L1UpgradeAnalyzer::beginJob()
   UpgradeTree->Branch("etsum_pt",etsum_pt,"etsum_pt[nEtsum]/D");
   UpgradeTree->Branch("etsum_eta",etsum_eta,"etsum_eta[nEtsum]/D");
   UpgradeTree->Branch("etsum_phi",etsum_phi,"etsum_phi[nEtsum]/D");
+
+  UpgradeTree->Branch("nHfring",&nHfring,"nHfring/I");
+  UpgradeTree->Branch("hfring_hwPt",hfring_hwPt,"hfring_hwPt[nHfring]/I");
+  UpgradeTree->Branch("hfring_hwEta",hfring_hwEta,"hfring_hwEta[nHfring]/I");
+  UpgradeTree->Branch("hfring_hwPhi",hfring_hwPhi,"hfring_hwPhi[nHfring]/I");
+  UpgradeTree->Branch("hfring_hwQual",hfring_hwQual,"hfring_hwQual[nHfring]/I");
+  UpgradeTree->Branch("hfring_hwIso",hfring_hwIso,"hfring_hwIso[nHfring]/I");
+  UpgradeTree->Branch("hfring_bx",hfring_bx,"hfring_bx[nHfring]/I");
+
+  UpgradeTree->Branch("hfring_pt",hfring_pt,"hfring_pt[nHfring]/D");
+  UpgradeTree->Branch("hfring_eta",hfring_eta,"hfring_eta[nHfring]/D");
+  UpgradeTree->Branch("hfring_phi",hfring_phi,"hfring_phi[nHfring]/D");
+
 
   if(doLayer1)
   {
