@@ -12,7 +12,7 @@ process.load('Configuration.Geometry.GeometryIdeal_cff')
 process.load('FWCore.MessageService.MessageLogger_cfi')
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(-1)
+    input = cms.untracked.int32(100)
     )
 
 # Input source
@@ -35,8 +35,8 @@ process.stage1Raw.nFramesPerEvent    = cms.untracked.int32(6)
 process.stage1Raw.nFramesOffset    = cms.untracked.vuint32(offsets)
 process.stage1Raw.nFramesLatency   = cms.untracked.vuint32(latencies)
 
-process.stage1Raw.rxFile = cms.untracked.string("/afs/cern.ch/user/g/ginnocen/public/MP7tests_data_1Jet75/rx_summary_nostrobe.txt")
-process.stage1Raw.txFile = cms.untracked.string("/afs/cern.ch/user/g/ginnocen/public/MP7tests_data_1Jet75/tx_summary_nostrobe.txt")
+process.stage1Raw.rxFile = cms.untracked.string("/afs/cern.ch/user/g/ginnocen/public/MP7testsP5_GoldenEvents_FixIso/rx_summary_nostrobe.txt")
+process.stage1Raw.txFile = cms.untracked.string("/afs/cern.ch/user/g/ginnocen/public/MP7testsP5_GoldenEvents_FixIso/tx_summary_nostrobe.txt")
 
 # raw to digi
 # I think this will unpack both the rct digis and the Layer 2 digis

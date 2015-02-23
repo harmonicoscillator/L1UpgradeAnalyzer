@@ -10,7 +10,7 @@
 #include "TString.h"
 #include "TCut.h"
 
-void plotL1Digis(TString inputFile = "L1UpgradeAnalyzer.root")
+void plotL1DigisSingleEvent(Long64_t entryNum, TString inputFile = "L1UpgradeAnalyzer.root")
 {
   TH1::SetDefaultSumw2();
 
@@ -18,29 +18,25 @@ void plotL1Digis(TString inputFile = "L1UpgradeAnalyzer.root")
   TTree *emulatorResults = (TTree*)inFile->Get("EmulatorResults/L1UpgradeTree");
   TTree *unpackerResults = (TTree*)inFile->Get("UnpackerResults/L1UpgradeTree");
 
-  const int nHISTS = 24;
+  TCut entryCut = Form("Entry$ == %i", entryNum);
+
+  const int nHISTS = 18;
   TString labels[nHISTS] = {"region_et", "region_eta", "region_phi",
 			    "egcand_rank", "egcand_eta", "egcand_phi",
 			    "central_jet_hwPt", "central_jet_hwEta", "central_jet_hwPhi",
 			    "forward_jet_hwPt", "forward_jet_hwEta", "forward_jet_hwPhi",
-			    "ETT", "HTT",
-			    "MET Rank", "MET Phi", "MHT Rank", "MHT Phi",
 			    "iso_egamma_hwPt", "iso_egamma_hwEta", "iso_egamma_hwPhi",
 			    "noniso_egamma_hwPt", "noniso_egamma_hwEta", "noniso_egamma_hwPhi"};
   TString projectionnames[nHISTS] = {"legacyregion_et", "legacyregion_gctEta", "legacyregion_gctPhi",
 				     "legacyemcand_rank", "legacyemcand_regionEta", "legacyemcand_regionPhi",
 				     "jet_hwPt", "jet_hwEta", "jet_hwPhi",
 				     "jet_hwPt", "jet_hwEta", "jet_hwPhi",
-				     "etsum_hwPt", "etsum_hwPt",
-				     "etsum_hwPt","etsum_hwPhi","etsum_hwPt","etsum_hwPhi",
-				     "egamma_hwPt", "egamma_hwEta", "egamma_hwPhi",
-				     "egamma_hwPt", "egamma_hwEta", "egamma_hwPhi"};
+				     "egamm_hwPt", "egamma_hwEta", "egamma_hwPhi",
+				     "egamm_hwPt", "egamma_hwEta", "egamma_hwPhi"};
   TCut projectioncuts[nHISTS] = {"", "", "",
 				 "", "", "",
 				 "(jet_hwQual&0x2)!=0x2","(jet_hwQual&0x2)!=0x2","(jet_hwQual&0x2)!=0x2",
 				 "(jet_hwQual&0x2)==0x2","(jet_hwQual&0x2)==0x2","(jet_hwQual&0x2)==0x2",
-				 "etsum_type==0","etsum_type==1",
-				 "etsum_type==2","etsum_type==2","etsum_type==3","etsum_type==3",
 				 "egamma_hwIso==1", "egamma_hwIso==1", "egamma_hwIso==1",
 				 "egamma_hwIso==0", "egamma_hwIso==0", "egamma_hwIso==0"};
   Int_t minBin[nHISTS] = {0, 0, 0,
@@ -59,18 +55,24 @@ void plotL1Digis(TString inputFile = "L1UpgradeAnalyzer.root")
 			  4096, 30, 128, 30,
 			  64, 22, 18,
 			  64, 22, 18};
+  INt_t maxIterator[nHISTS] = {396, 396, 396,
+			       144, 144, 144,
+			       4, 4, 4,
+			       4, 4, 4,
+			       4, 4, 4,
+			       4, 4, 4};
 
-  TH1I *hists[nHISTS][3];
+  TH2I *hists[nHISTS][3];
   TCanvas *c[nHISTS];
 
   for(int i = 0; i < nHISTS; ++i)
   {
-    hists[i][0] = new TH1I(labels[i], ";"+labels[i], maxBin[i]-minBin[i], minBin[i], maxBin[i]);
-    hists[i][1] = (TH1I*)hists[i][0]->Clone(labels[i]+"unpacked");
-    hists[i][2] = (TH1I*)hists[i][0]->Clone(labels[i]+"div");
+    hists[i][0] = new TH2I(labels[i], ";"+labels[i], maxIterator[i], 0, maxIterator[i], maxBin[i]-minBin[i], minBin[i], maxBin[i]);
+    hists[i][1] = (TH2I*)hists[i][0]->Clone(labels[i]+"unpacked");
+    hists[i][2] = (TH2I*)hists[i][0]->Clone(labels[i]+"div");
 
-    emulatorResults->Project(hists[i][0]->GetName(), projectionnames[i], projectioncuts[i]);
-    unpackerResults->Project(hists[i][1]->GetName(), projectionnames[i], projectioncuts[i]);
+    emulatorResults->Project(hists[i][0]->GetName(), projectionnames[i]+":Iterator$", projectioncuts[i]&&entryCut);
+    unpackerResults->Project(hists[i][1]->GetName(), projectionnames[i]+":Iterator$", projectioncuts[i]&&entryCut);
 
     hists[i][2]->Divide(hists[i][1], hists[i][0]);
 
@@ -80,10 +82,10 @@ void plotL1Digis(TString inputFile = "L1UpgradeAnalyzer.root")
     c[i] = new TCanvas();
     c[i]->Divide(1,2);
     c[i]->cd(1);
-    hists[i][0]->Draw("hist");
-    hists[i][1]->Draw("p same");
+    hists[i][0]->Draw("");
+    hists[i][1]->Draw("same");
 
     c[i]->cd(2);
-    hists[i][2]->Draw("p e");
+    hists[i][2]->Draw("colz");
   }
 }
