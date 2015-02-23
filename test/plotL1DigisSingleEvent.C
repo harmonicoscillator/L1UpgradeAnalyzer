@@ -31,8 +31,8 @@ void plotL1DigisSingleEvent(Long64_t entryNum, TString inputFile = "L1UpgradeAna
 				     "legacyemcand_rank", "legacyemcand_regionEta", "legacyemcand_regionPhi",
 				     "jet_hwPt", "jet_hwEta", "jet_hwPhi",
 				     "jet_hwPt", "jet_hwEta", "jet_hwPhi",
-				     "egamm_hwPt", "egamma_hwEta", "egamma_hwPhi",
-				     "egamm_hwPt", "egamma_hwEta", "egamma_hwPhi"};
+				     "egamma_hwPt", "egamma_hwEta", "egamma_hwPhi",
+				     "egamma_hwPt", "egamma_hwEta", "egamma_hwPhi"};
   TCut projectioncuts[nHISTS] = {"", "", "",
 				 "", "", "",
 				 "(jet_hwQual&0x2)!=0x2","(jet_hwQual&0x2)!=0x2","(jet_hwQual&0x2)!=0x2",
@@ -43,19 +43,15 @@ void plotL1DigisSingleEvent(Long64_t entryNum, TString inputFile = "L1UpgradeAna
 			  0, 0, 0,
 			  0, 0, 0,
 			  0, 0, 0,
-			  0, 0,
-			  0, 0, 0, 0,
   			  0, 0, 0,
 			  0, 0, 0};
   Int_t maxBin[nHISTS] = {1024, 22, 18,
 			  64, 22, 18,
 			  64,22,18,
 			  64,22,18,
-			  4096, 4096,
-			  4096, 30, 128, 30,
 			  64, 22, 18,
 			  64, 22, 18};
-  INt_t maxIterator[nHISTS] = {396, 396, 396,
+  Int_t maxIterator[nHISTS] = {396, 396, 396,
 			       144, 144, 144,
 			       4, 4, 4,
 			       4, 4, 4,
@@ -67,12 +63,12 @@ void plotL1DigisSingleEvent(Long64_t entryNum, TString inputFile = "L1UpgradeAna
 
   for(int i = 0; i < nHISTS; ++i)
   {
-    hists[i][0] = new TH2I(labels[i], ";"+labels[i], maxIterator[i], 0, maxIterator[i], maxBin[i]-minBin[i], minBin[i], maxBin[i]);
+    hists[i][0] = new TH2I(labels[i], ";Iteration;"+labels[i], maxIterator[i], 0, maxIterator[i], maxBin[i]-minBin[i], minBin[i], maxBin[i]);
     hists[i][1] = (TH2I*)hists[i][0]->Clone(labels[i]+"unpacked");
     hists[i][2] = (TH2I*)hists[i][0]->Clone(labels[i]+"div");
 
-    emulatorResults->Project(hists[i][0]->GetName(), projectionnames[i]+":Iterator$", projectioncuts[i]&&entryCut);
-    unpackerResults->Project(hists[i][1]->GetName(), projectionnames[i]+":Iterator$", projectioncuts[i]&&entryCut);
+    emulatorResults->Project(hists[i][0]->GetName(), projectionnames[i]+":Iteration$", projectioncuts[i]&&entryCut);
+    unpackerResults->Project(hists[i][1]->GetName(), projectionnames[i]+":Iteration$", projectioncuts[i]&&entryCut);
 
     hists[i][2]->Divide(hists[i][1], hists[i][0]);
 
@@ -82,10 +78,11 @@ void plotL1DigisSingleEvent(Long64_t entryNum, TString inputFile = "L1UpgradeAna
     c[i] = new TCanvas();
     c[i]->Divide(1,2);
     c[i]->cd(1);
-    hists[i][0]->Draw("");
-    hists[i][1]->Draw("same");
+    hists[i][0]->Draw("colz");
+    // hists[i][1]->Draw("same");
 
     c[i]->cd(2);
-    hists[i][2]->Draw("colz");
+    //hists[i][2]->Draw("colz");
+    hists[i][1]->Draw("colz");
   }
 }
