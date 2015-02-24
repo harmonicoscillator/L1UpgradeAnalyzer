@@ -29,7 +29,7 @@ process.GlobalTag.globaltag = cms.string('POSTLS161_V12::All')
 process.load('EventFilter.L1TRawToDigi.stage1MP7BufferRaw_cfi')
 # pack into arrays
 latencies = [ 32, 0 ]
-offsets   = [ 6,  60 ]
+offsets   = [ 0,  54 ]
 
 process.stage1Raw.nFramesPerEvent    = cms.untracked.int32(6)
 process.stage1Raw.nFramesOffset    = cms.untracked.vuint32(offsets)
