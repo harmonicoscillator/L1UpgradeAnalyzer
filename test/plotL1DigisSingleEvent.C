@@ -84,5 +84,7 @@ void plotL1DigisSingleEvent(Long64_t entryNum, TString inputFile = "L1UpgradeAna
     c[i]->cd(2);
     //hists[i][2]->Draw("colz");
     hists[i][1]->Draw("colz");
+
+    c[i]->SaveAs(Form("figs/single_event_%s.gif",labels[i].Data()));
   }
 }
