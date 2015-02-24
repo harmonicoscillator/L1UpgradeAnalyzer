@@ -24,7 +24,7 @@ void plotL1Digis(TString inputFile = "L1UpgradeAnalyzer.root")
 			    "central_jet_hwPt", "central_jet_hwEta", "central_jet_hwPhi",
 			    "forward_jet_hwPt", "forward_jet_hwEta", "forward_jet_hwPhi",
 			    "ETT", "HTT",
-			    "MET Rank", "MET Phi", "MHT Rank", "MHT Phi",
+			    "MET_Rank", "MET_Phi", "MHT_Rank", "MHT_Phi",
 			    "iso_egamma_hwPt", "iso_egamma_hwEta", "iso_egamma_hwPhi",
 			    "noniso_egamma_hwPt", "noniso_egamma_hwEta", "noniso_egamma_hwPhi"};
   TString projectionnames[nHISTS] = {"legacyregion_et", "legacyregion_gctEta", "legacyregion_gctPhi",
@@ -60,19 +60,20 @@ void plotL1Digis(TString inputFile = "L1UpgradeAnalyzer.root")
 			  64, 22, 18,
 			  64, 22, 18};
 
-  TH1I *hists[nHISTS][3];
+  TH1I *hists[nHISTS][2];
+  TH1D *divs[nHISTS];
   TCanvas *c[nHISTS];
 
   for(int i = 0; i < nHISTS; ++i)
   {
     hists[i][0] = new TH1I(labels[i], ";"+labels[i], maxBin[i]-minBin[i], minBin[i], maxBin[i]);
     hists[i][1] = (TH1I*)hists[i][0]->Clone(labels[i]+"unpacked");
-    hists[i][2] = (TH1I*)hists[i][0]->Clone(labels[i]+"div");
+    divs[i] = new TH1D(labels[i]+"div", ";"+labels[i], maxBin[i]-minBin[i], minBin[i], maxBin[i]);
 
     emulatorResults->Project(hists[i][0]->GetName(), projectionnames[i], projectioncuts[i]);
     unpackerResults->Project(hists[i][1]->GetName(), projectionnames[i], projectioncuts[i]);
 
-    hists[i][2]->Divide(hists[i][1], hists[i][0]);
+    divs[i]->Divide(hists[i][1], hists[i][0]);
 
     hists[i][1]->SetMarkerColor(kRed);
     hists[i][1]->SetLineColor(kRed);
@@ -84,6 +85,8 @@ void plotL1Digis(TString inputFile = "L1UpgradeAnalyzer.root")
     hists[i][1]->Draw("p same");
 
     c[i]->cd(2);
-    hists[i][2]->Draw("p e");
+    divs[i]->Draw("p e");
+
+    c[i]->SaveAs(Form("figs/%s.gif",labels[i].Data()));
   }
 }

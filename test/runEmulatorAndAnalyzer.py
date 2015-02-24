@@ -24,7 +24,8 @@ process.source = cms.Source("PoolSource",
 #'root://xrootd.unl.edu//store/user/icali/HIMinBiasUPC/HIMinBiasUPC_Skim_HLT_HIMinBiasHfOrBSC_v2/35880fcf9fb9fd84b27cd1405e09ffd1/SD_MinBiasHI_1000_1_nOG.root'
 #"file:/afs/cern.ch/work/g/ginnocen/public/skim_10_1_wd2.root"
 #"file:/afs/cern.ch/user/g/ginnocen/public/MP7tests_data_260_1Jet75/l1tCalo_2015_EDM.root"
-"file:/afs/cern.ch/user/g/ginnocen/public/MP7tests_data_1Jet75/l1tCalo_2015_EDM.root"
+#"file:/afs/cern.ch/user/g/ginnocen/public/MP7tests_data_1Jet75/l1tCalo_2015_EDM.root"
+"file:/afs/cern.ch/user/r/richard/TESTING/CMSSW_7_4_0_pre6/src/l1tCalo_2015_EDM.root"
                             )
 )
 
@@ -36,6 +37,8 @@ from Configuration.AlCa.GlobalTag import GlobalTag
 #process.GlobalTag = GlobalTag(process.GlobalTag, 'STARTHI53_LV1::All', '')
 process.GlobalTag.connect = cms.string('frontier://FrontierProd/CMS_COND_31X_GLOBALTAG')
 process.GlobalTag.globaltag = cms.string('POSTLS161_V12::All')
+#process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:startup', '')
+
 
 
 # HCAL TP hack
@@ -70,16 +73,37 @@ process.TFileService = cms.Service("TFileService",
                                    fileName = cms.string("L1UpgradeAnalyzer.root")
 )
 
-process.L1UpgradeAnalyzer = cms.EDAnalyzer('l1t::L1UpgradeAnalyzer',
-                                           InputLayer2Collection = cms.InputTag("simCaloStage1FinalDigis"),
-                                           InputLayer2TauCollection = cms.InputTag("simCaloStage1FinalDigis:rlxTaus"),
-                                           InputLayer2IsoTauCollection = cms.InputTag("simCaloStage1FinalDigis:isoTaus"),
-                                           InputLayer2CaloSpareCollection = cms.InputTag("simCaloStage1FinalDigis:HFRingSums"),
-                                           InputLayer1Collection = cms.InputTag("simRctUpgradeFormatDigis"),
-                                           legacyRCTDigis = cms.InputTag("caloStage1Digis")
+# process.L1UpgradeAnalyzer = cms.EDAnalyzer('l1t::L1UpgradeAnalyzer',
+#                                            InputLayer2Collection = cms.InputTag("simCaloStage1FinalDigis"),
+#                                            InputLayer2TauCollection = cms.InputTag("simCaloStage1FinalDigis:rlxTaus"),
+#                                            InputLayer2IsoTauCollection = cms.InputTag("simCaloStage1FinalDigis:isoTaus"),
+#                                            InputLayer2CaloSpareCollection = cms.InputTag("simCaloStage1FinalDigis:HFRingSums"),
+#                                            InputLayer1Collection = cms.InputTag("simRctUpgradeFormatDigis"),
+#                                            legacyRCTDigis = cms.InputTag("caloStage1Digis")
+# )
+
+# process.p2 = cms.Path(process.L1UpgradeAnalyzer)
+
+process.EmulatorResults = cms.EDAnalyzer('l1t::L1UpgradeAnalyzer',
+                                         InputLayer2Collection = cms.InputTag("simCaloStage1FinalDigis"),
+                                         InputLayer2TauCollection = cms.InputTag("simCaloStage1FinalDigis:rlxTaus"),
+                                         InputLayer2IsoTauCollection = cms.InputTag("simCaloStage1FinalDigis:isoTaus"),
+                                         InputLayer2CaloSpareCollection = cms.InputTag("simCaloStage1FinalDigis:HFRingSums"),
+                                         InputLayer1Collection = cms.InputTag("simRctUpgradeFormatDigis"),
+                                         legacyRCTDigis = cms.InputTag("caloStage1Digis")
 )
 
-process.p2 = cms.Path(process.L1UpgradeAnalyzer)
+process.UnpackerResults = cms.EDAnalyzer('l1t::L1UpgradeAnalyzer',
+                                         InputLayer2Collection = cms.InputTag("caloStage1Digis"),
+                                         InputLayer2TauCollection = cms.InputTag("caloStage1Digis:rlxTaus"),
+                                         InputLayer2IsoTauCollection = cms.InputTag("caloStage1Digis:isoTaus"),
+                                         InputLayer2CaloSpareCollection = cms.InputTag("caloStage1Digis:HFRingSums"),
+                                         InputLayer1Collection = cms.InputTag("simRctUpgradeFormatDigis"),
+                                         legacyRCTDigis = cms.InputTag("caloStage1Digis")
+)
+
+
+process.p2 = cms.Path(process.EmulatorResults + process.UnpackerResults)
 
 
 process.schedule = cms.Schedule(
