@@ -57,7 +57,7 @@ process.p1 = cms.Path(
     )
 
 process.TFileService = cms.Service("TFileService",
-                                   fileName = cms.string("L1UpgradeAnalyzer.root")
+                                   fileName = cms.string("L1UpackedReEmulator.root")
 )
 
 process.EmulatorResults = cms.EDAnalyzer('l1t::L1UpgradeAnalyzer',
