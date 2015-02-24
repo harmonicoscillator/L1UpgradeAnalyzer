@@ -3,3 +3,9 @@ __init__.py
 
 *.root
 out.log
+
+*.gif
+*.pdf
+
+*_C.d
+*_C.so
