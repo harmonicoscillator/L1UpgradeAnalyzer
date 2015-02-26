@@ -48,15 +48,15 @@ void plotL1DigisSingleEvent(Long64_t entryNum, TString inputFile = "L1UpgradeAna
   Int_t maxBin[nHISTS] = {1024, 22, 18,
 			  64, 22, 18,
 			  64,22,18,
-			  64,22,18,
+			  10,22,18,
 			  64, 22, 18,
-			  64, 22, 18};
+			  10, 22, 18};
   Int_t maxIterator[nHISTS] = {396, 396, 396,
 			       144, 144, 144,
-			       4, 4, 4,
-			       4, 4, 4,
-			       4, 4, 4,
-			       4, 4, 4};
+			       8, 8, 8,
+			       8, 8, 8,
+			       8, 8, 8,
+			       8, 8, 8};
 
   TH2I *hists[nHISTS][3];
   TCanvas *c[nHISTS];
