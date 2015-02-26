@@ -33,15 +33,15 @@ process.GlobalTag.globaltag = cms.string('POSTLS161_V12::All')
 # raw data from MP card
 process.load('EventFilter.L1TRawToDigi.stage1MP7BufferRaw_cfi')
 # pack into arrays
-latencies = [ 32, 0 ]
+latencies = [ 40, 0 ]
 offsets   = [ 0,  54 ]
 
 process.stage1Raw.nFramesPerEvent    = cms.untracked.int32(6)
 process.stage1Raw.nFramesOffset    = cms.untracked.vuint32(offsets)
 process.stage1Raw.nFramesLatency   = cms.untracked.vuint32(latencies)
 
-process.stage1Raw.rxFile = cms.untracked.string("/afs/cern.ch/user/g/ginnocen/public/MP7testsP5_GoldenEvents_FixIso/rx_summary_nostrobe.txt")
-process.stage1Raw.txFile = cms.untracked.string("/afs/cern.ch/user/g/ginnocen/public/MP7testsP5_GoldenEvents_FixIso/tx_summary_nostrobe.txt")
+process.stage1Raw.rxFile = cms.untracked.string("/afs/cern.ch/user/g/ginnocen/public/MP7testsP5_GoldenEvents_FixIso_Aligned/rx_summary_final.txt")
+process.stage1Raw.txFile = cms.untracked.string("/afs/cern.ch/user/g/ginnocen/public/MP7testsP5_GoldenEvents_FixIso_Aligned/tx_summary_final.txt")
 
 # raw to digi
 # I think this will unpack both the rct digis and the Layer 2 digis
