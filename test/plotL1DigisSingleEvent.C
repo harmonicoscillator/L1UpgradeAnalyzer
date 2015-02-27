@@ -10,7 +10,7 @@
 #include "TString.h"
 #include "TCut.h"
 
-void plotL1DigisSingleEvent(Long64_t entryNum, TString inputFile = "L1UpgradeAnalyzer.root")
+void plotL1DigisSingleEvent(Long64_t entryNum, TString inputFile = "L1UnpackedPureEmulator.root")
 {
   TH1::SetDefaultSumw2();
 
@@ -20,43 +20,67 @@ void plotL1DigisSingleEvent(Long64_t entryNum, TString inputFile = "L1UpgradeAna
 
   TCut entryCut = Form("Entry$ == %i", entryNum);
 
-  const int nHISTS = 18;
+  const int nHISTS = 30;
   TString labels[nHISTS] = {"region_et", "region_eta", "region_phi",
 			    "egcand_rank", "egcand_eta", "egcand_phi",
 			    "central_jet_hwPt", "central_jet_hwEta", "central_jet_hwPhi",
 			    "forward_jet_hwPt", "forward_jet_hwEta", "forward_jet_hwPhi",
+			    "ETT", "HTT",
+			    "MET_Rank", "MET_Phi", "MHT_Rank", "MHT_Phi",
 			    "iso_egamma_hwPt", "iso_egamma_hwEta", "iso_egamma_hwPhi",
-			    "noniso_egamma_hwPt", "noniso_egamma_hwEta", "noniso_egamma_hwPhi"};
+			    "noniso_egamma_hwPt", "noniso_egamma_hwEta", "noniso_egamma_hwPhi",
+			    "tau_hwPt", "tau_hwEta", "tau_hwPhi",
+			    "isotau_hwPt", "isotau_hwEta", "isotau_hwPhi"};
   TString projectionnames[nHISTS] = {"legacyregion_et", "legacyregion_gctEta", "legacyregion_gctPhi",
 				     "legacyemcand_rank", "legacyemcand_regionEta", "legacyemcand_regionPhi",
 				     "jet_hwPt", "jet_hwEta", "jet_hwPhi",
 				     "jet_hwPt", "jet_hwEta", "jet_hwPhi",
+				     "etsum_hwPt", "etsum_hwPt",
+				     "etsum_hwPt","etsum_hwPhi","etsum_hwPt","etsum_hwPhi",
 				     "egamma_hwPt", "egamma_hwEta", "egamma_hwPhi",
-				     "egamma_hwPt", "egamma_hwEta", "egamma_hwPhi"};
+				     "egamma_hwPt", "egamma_hwEta", "egamma_hwPhi",
+			         "tau_hwPt", "tau_hwEta", "tau_hwPhi",
+			         "isotau_hwPt", "isotau_hwEta", "isotau_hwPhi"};
   TCut projectioncuts[nHISTS] = {"", "", "",
 				 "", "", "",
 				 "(jet_hwQual&0x2)!=0x2","(jet_hwQual&0x2)!=0x2","(jet_hwQual&0x2)!=0x2",
 				 "(jet_hwQual&0x2)==0x2","(jet_hwQual&0x2)==0x2","(jet_hwQual&0x2)==0x2",
+				 "etsum_type==0","etsum_type==1",
+				 "etsum_type==2","etsum_type==2","etsum_type==3","etsum_type==3",
 				 "egamma_hwIso==1", "egamma_hwIso==1", "egamma_hwIso==1",
-				 "egamma_hwIso==0", "egamma_hwIso==0", "egamma_hwIso==0"};
+				 "egamma_hwIso==0", "egamma_hwIso==0", "egamma_hwIso==0",
+				 "", "", "",
+				 "", "", ""};
   Int_t minBin[nHISTS] = {0, 0, 0,
 			  0, 0, 0,
 			  0, 0, 0,
 			  0, 0, 0,
+			  0, 0,
+			  0, 0, 0, 0,
   			  0, 0, 0,
+			  0, 0, 0,
+			  0, 0, 0,
 			  0, 0, 0};
   Int_t maxBin[nHISTS] = {1024, 22, 18,
 			  64, 22, 18,
 			  64,22,18,
-			  10,22,18,
+			  64,22,18,
+			  4096, 4096,
+			  4096, 30, 128, 30,
 			  64, 22, 18,
-			  10, 22, 18};
+			  64, 22, 18,
+			  64, 22, 18,
+			  64, 22, 18};
   Int_t maxIterator[nHISTS] = {396, 396, 396,
 			       144, 144, 144,
 			       8, 8, 8,
 			       8, 8, 8,
+			       4, 4,
+			       4,4,4,4,
 			       8, 8, 8,
-			       8, 8, 8};
+			       8, 8, 8,
+			       4, 4, 4,
+			       4, 4, 4};
 
   TH2I *hists[nHISTS][3];
   TCanvas *c[nHISTS];
