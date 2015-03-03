@@ -61,16 +61,16 @@ void plotL1Digis(TString inputFile = "L1UnpackedPureEmulator.root")
 			  0, 0, 0,
 			  0, 0, 0,
 			  0, 0, 0};
-  Int_t maxBin[nHISTS] = {1024, 22, 18,
-			  64, 22, 18,
-			  64,22,18,
-			  64,22,18,
-			  4096, 4096,
-			  4096, 30, 128, 30,
-			  64, 22, 18,
-			  64, 22, 18,
-			  64, 22, 18,
-			  64, 22, 18};
+  Int_t maxBin[nHISTS] = {40, 22, 25,
+			  64, 22, 25,
+			  64,22,25,
+			  64,22,25,
+			  600, 300,
+			  200, 70, 200, 30,
+			  64, 22, 25,
+			  64, 22, 25,
+			  64, 22, 25,
+			  64, 25, 25};
 
   TH1I *hists[nHISTS][2];
   TH1D *divs[nHISTS];
@@ -86,18 +86,36 @@ void plotL1Digis(TString inputFile = "L1UnpackedPureEmulator.root")
     unpackerResults->Project(hists[i][1]->GetName(), projectionnames[i], projectioncuts[i]);
 
     divs[i]->Divide(hists[i][1], hists[i][0]);
+    for (int m=1;m<=hists[i][1]->GetNbinsX();m++){
+    
+    if(hists[i][1]->GetBinContent(m)==hists[i][0]->GetBinContent(m)) divs[i]->SetBinContent(m,1);
+    }
+        
+    hists[i][0]->SetLineWidth(5);
 
-    hists[i][1]->SetMarkerColor(kRed);
-    hists[i][1]->SetLineColor(kRed);
+    hists[i][0]->SetMarkerColor(kRed);
+    hists[i][0]->SetLineColor(kRed);
+    hists[i][1]->SetLineWidth(2);
 
     c[i] = new TCanvas();
     c[i]->Divide(1,2);
     c[i]->cd(1);
     hists[i][0]->Draw("hist");
-    hists[i][1]->Draw("p same");
+    hists[i][1]->Draw("hist same");
+    TLegend* legend= new TLegend(0.72578,0.7917988,0.9002463,0.9371476);
+    legend->SetFillColor(0);
+    legend->SetLineColor(kGray+2);
+    legend->SetTextFont(42);
+    ent=legend->AddEntry(hists[i][0],"Emulator","F");
+    ent=legend->AddEntry(hists[i][1],"Unpacked","F");
+    legend->Draw();
+
 
     c[i]->cd(2);
-    divs[i]->Draw("p e");
+    divs[i]->SetLineWidth(3);
+    divs[i]->GetYaxis()->SetTitle("Ratio unpacked/emulated");
+    divs[i]->Draw("hist");
+
 
     c[i]->SaveAs(Form("figs/%s.gif",labels[i].Data()));
   }
