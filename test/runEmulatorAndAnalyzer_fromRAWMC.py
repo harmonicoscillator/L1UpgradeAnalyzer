@@ -27,9 +27,9 @@ process.source = cms.Source("PoolSource",
 process.options = cms.untracked.PSet()
 
 # Other statements
-from Configuration.AlCa.GlobalTag import GlobalTag
-process.GlobalTag.connect = cms.string('frontier://FrontierProd/CMS_COND_31X_GLOBALTAG')
-process.GlobalTag.globaltag = cms.string('MCHI2_74_V3')
+from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag as customiseGlobalTag
+process.GlobalTag = customiseGlobalTag(process.GlobalTag, globaltag = 'MCHI2_74_V3')
+process.GlobalTag.connect   = 'frontier://FrontierProd/CMS_CONDITIONS'
 
 # Use PPFromRaw because it grabs the MC info correctly, then change parameters
 # to match the HI emulator.
