@@ -35,8 +35,14 @@ process.GlobalTag.connect   = 'frontier://FrontierProd/CMS_CONDITIONS'
 # to match the HI emulator.
 process.load('L1Trigger.L1TCalorimeter.L1TCaloStage1_PPFromRaw_cff')
 process.simCaloStage1Digis.FirmwareVersion = cms.uint32(1)
-process.RCTConfigProducers.hOeCut = cms.double(999)
 process.caloStage1Params.jetSeedThreshold = cms.double(0.)
+process.RCTConfigProducers.eicIsolationThreshold = cms.uint32(7)
+process.RCTConfigProducers.hOeCut = cms.double(999)
+process.RCTConfigProducers.eMinForHoECut = cms.double(999)
+process.RCTConfigProducers.eMaxForHoECut = cms.double(999)
+process.RCTConfigProducers.hMinForHoECut = cms.double(999)
+process.RCTConfigProducers.eMinForFGCut = cms.double(999)
+
 
 process.p1 = cms.Path(
     process.L1TCaloStage1_PPFromRaw
