@@ -30,6 +30,11 @@ from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, 'GR_P_V27A::All', '')
 process.GlobalTag.connect = cms.string('frontier://FrontierProd/CMS_COND_31X_GLOBALTAG')
 
+# Conditionally load this file only if we are in 750pre1 or newer
+import os
+cmsswVersion = os.environ['CMSSW_VERSION']
+if cmsswVersion >= "CMSSW_7_5":
+    process.load('L1Trigger.L1TCalorimeter.caloConfigStage1HI_cfi')
 process.load('L1Trigger.L1TCalorimeter.L1TCaloStage1_HIFromRaw_cff')
 
 process.p1 = cms.Path(

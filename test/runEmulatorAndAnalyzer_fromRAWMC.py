@@ -19,7 +19,7 @@ process.maxEvents = cms.untracked.PSet(
 process.source = cms.Source("PoolSource",
     secondaryFileNames = cms.untracked.vstring(),
                             fileNames = cms.untracked.vstring(
-"/store/user/mnguyen/Hydjet_Quenched_MinBias_5020GeV/HydjetMB_Raw_731p2/f631684cfdc14c1a6ae91b3a3f3f9d13/step2_DIGI_L1_DIGI2RAW_HLT_RAW2DIGI_L1Reco_105_1_VGQ.root"
+"/store/user/mnguyen/Hydjet_Quenched_MinBias_5020GeV/HydjetMB_740pre8_MCHI2_74_V3_53XBS_DIGI-RAW/6da45e4e90741bc03dbd9aec5f36c050/step2_DIGI_L1_DIGI2RAW_HLT_RAW2DIGI_L1Reco_100_1_nRy.root"
 
                             )
 )
@@ -31,6 +31,11 @@ from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag as customiseGlobalTa
 process.GlobalTag = customiseGlobalTag(process.GlobalTag, globaltag = 'MCHI2_74_V3')
 process.GlobalTag.connect   = 'frontier://FrontierProd/CMS_CONDITIONS'
 
+# Conditionally load this file only if we are in 750pre1 or newer
+import os
+cmsswVersion = os.environ['CMSSW_VERSION']
+if cmsswVersion >= "CMSSW_7_5":
+    process.load('L1Trigger.L1TCalorimeter.caloConfigStage1HI_cfi')
 # Use PPFromRaw because it grabs the MC info correctly, then change parameters
 # to match the HI emulator.
 process.load('L1Trigger.L1TCalorimeter.L1TCaloStage1_PPFromRaw_cff')
