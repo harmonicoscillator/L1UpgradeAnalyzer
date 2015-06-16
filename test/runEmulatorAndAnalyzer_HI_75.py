@@ -6,6 +6,7 @@
 ## set the booleans just below this statement to tailor behavior for HI data/mc
 
 MONTECARLO=True
+EDMOUTPUT=False
 
 import FWCore.ParameterSet.Config as cms
 
@@ -21,7 +22,7 @@ process.load('Configuration.Geometry.GeometryIdeal_cff')
 process.load('FWCore.MessageService.MessageLogger_cfi')
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(100)
+    input = cms.untracked.int32(20)
     )
 
 # Input source
@@ -86,6 +87,18 @@ process.L1UpgradeAnalyzer = cms.EDAnalyzer('l1t::L1UpgradeAnalyzer',
 
 process.p2 = cms.Path(process.L1UpgradeAnalyzer)
 
-process.schedule = cms.Schedule(
-    process.p1, process.p2
+if EDMOUTPUT:
+    process.output = cms.OutputModule(
+        "PoolOutputModule",
+        splitLevel = cms.untracked.int32(0),
+        eventAutoFlushCompressedSize = cms.untracked.int32(5242880),
+        outputCommands = cms.untracked.vstring("drop *",
+                                               "keep *_*_*_L1TEMULATION"),
+        fileName = cms.untracked.string('L1T_EDM.root'),
+        dataset = cms.untracked.PSet(
+            filterName = cms.untracked.string(''),
+            dataTier = cms.untracked.string('')
+        )
     )
+
+    process.outPath = cms.EndPath(process.output)
