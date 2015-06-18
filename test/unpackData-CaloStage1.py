@@ -115,14 +115,15 @@ process.path = cms.Path(
 )
 
 if (options.RunAnalyzer):
-   process.TFileService = cms.Service("TFileService",fileName = cms.string("L1UnpackedPureEmulator.root"))
+   process.TFileService = cms.Service("TFileService",fileName = cms.string("L1UnpackedUnpacker.root"))
    process.UnpackerResults = cms.EDAnalyzer('l1t::L1UpgradeAnalyzer',
                                          InputLayer2Collection = cms.InputTag("caloStage1Digis"),
                                          InputLayer2TauCollection = cms.InputTag("caloStage1Digis:rlxTaus"),
                                          InputLayer2IsoTauCollection = cms.InputTag("caloStage1Digis:isoTaus"),
                                          InputLayer2CaloSpareCollection = cms.InputTag("caloStage1Digis:HFRingSums"),
                                          InputLayer1Collection = cms.InputTag("None"),
-                                         legacyRCTDigis = cms.InputTag("caloStage1Digis")
+                                         legacyRCTDigis = cms.InputTag("caloStage1Digis"),
+                                         FEDRawCollection = cms.InputTag("rawDataCollector")
    )
    process.myanalyzer = cms.Path(
    process.UnpackerResults
@@ -132,7 +133,7 @@ if (options.RunAnalyzer):
 # optional histograms & text dump
 if (options.dumpDigis or options.histos):
     process.load("CommonTools.UtilAlgos.TFileService_cfi")
-    process.TFileService.fileName = cms.string('l1tCalo_histos.root')
+    #process.TFileService.fileName = cms.string('l1tCalo_histos.root')
 
     process.load('L1Trigger.L1TCalorimeter.l1tStage2CaloAnalyzer_cfi')
     process.l1tStage2CaloAnalyzer.towerToken   = cms.InputTag("None")
