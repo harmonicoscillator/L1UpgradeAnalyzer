@@ -46,6 +46,7 @@ process.GlobalTag.globaltag = cms.string('POSTLS161_V12::All')
 
 #process.load('L1Trigger.L1TCalorimeter.L1TCaloStage1_HIFromRaw_cff')
 process.load('L1Trigger.L1TCalorimeter.L1TCaloStage1_PPFromRaw_cff')
+#process.load('L1Trigger.L1TCalorimeter.caloConfigStage1PP_cfi')                      #ADD THIS OPTION TO RUN WITH 75
 process.simCaloStage1Digis.FirmwareVersion = cms.uint32(3)
 #process.simRctUpgradeFormatDigis.emTag = cms.InputTag("caloStage1Digis")
 #process.simRctUpgradeFormatDigis.regionTag = cms.InputTag("caloStage1Digis")
