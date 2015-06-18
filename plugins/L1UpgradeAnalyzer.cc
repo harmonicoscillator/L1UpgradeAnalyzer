@@ -16,6 +16,7 @@ l1t::L1UpgradeAnalyzer::L1UpgradeAnalyzer(const edm::ParameterSet& ps) {
   JetToken_ = consumes<l1t::JetBxCollection>(ps.getParameter<edm::InputTag>("InputLayer2Collection"));
   EtSumToken_ = consumes<l1t::EtSumBxCollection>(ps.getParameter<edm::InputTag>("InputLayer2Collection"));
   CaloSpareToken_ = consumes<l1t::CaloSpareBxCollection>(ps.getParameter<edm::InputTag>("InputLayer2CaloSpareCollection"));
+  FEDRawToken_ = consumes<FEDRawDataCollection>(ps.getParameter<edm::InputTag>("FEDRawCollection"));
 
   edm::InputTag Layer1 = ps.getParameter<edm::InputTag>("InputLayer1Collection");
   if(Layer1.label() != "None")
@@ -37,6 +38,12 @@ void
 l1t::L1UpgradeAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
   // boilerplate
+  
+  edm::Handle<FEDRawDataCollection> rawdata;  
+  iEvent.getByToken(FEDRawToken_, rawdata);
+  const FEDRawData& data = rawdata->FEDData(1352);
+  FEDHeader header(data.data());
+  
   edm::Handle<l1t::EGammaBxCollection> egammas;
   edm::Handle<l1t::TauBxCollection> taus;
   edm::Handle<l1t::TauBxCollection> isotaus;
@@ -69,6 +76,7 @@ l1t::L1UpgradeAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
   event = iEvent.id().event();
   run = iEvent.id().run();
   lumi = iEvent.id().luminosityBlock();
+  FEDBXID=header.bxID();
 
   nJet = 0;
   nTau = 0;
@@ -287,6 +295,7 @@ l1t::L1UpgradeAnalyzer::beginJob()
   UpgradeTree->Branch("event",&event,"event/I");
   UpgradeTree->Branch("run", &run, "run/I");
   UpgradeTree->Branch("lumi", &lumi, "lumi/I");
+  UpgradeTree->Branch("FEDBXID", &FEDBXID, "FEDBXID/I");
 
   const unsigned int MAXSIZE = 1000;
 
