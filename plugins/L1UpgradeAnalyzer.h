@@ -33,10 +33,10 @@
 #include "DataFormats/L1CaloTrigger/interface/L1CaloRegion.h"
 #include "DataFormats/L1CaloTrigger/interface/L1CaloCollections.h"
 
-#include <DataFormats/FEDRawData/interface/FEDRawDataCollection.h>
-#include <DataFormats/FEDRawData/interface/FEDHeader.h>
-#include <DataFormats/FEDRawData/interface/FEDTrailer.h>
-#include <DataFormats/FEDRawData/interface/FEDNumbering.h>
+//#include <DataFormats/FEDRawData/interface/FEDRawDataCollection.h>
+//#include <DataFormats/FEDRawData/interface/FEDHeader.h>
+//#include <DataFormats/FEDRawData/interface/FEDTrailer.h>
+//#include <DataFormats/FEDRawData/interface/FEDNumbering.h>
 
 
 #include "TTree.h"
@@ -63,7 +63,7 @@ namespace l1t {
       // ----------member data ---------------------------
 
 
-      edm::EDGetToken FEDRawToken_;
+      //edm::EDGetToken FEDRawToken_;
       edm::EDGetToken EGammaToken_;
       edm::EDGetToken TauToken_;
       edm::EDGetToken isoTauToken_;
@@ -86,7 +86,7 @@ namespace l1t {
       TTree *UpgradeTree;
 
       int event;
-      int FEDBXID;
+      //int FEDBXID;
       int run;
       int lumi;
 
