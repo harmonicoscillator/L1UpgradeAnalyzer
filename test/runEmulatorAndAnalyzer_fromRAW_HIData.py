@@ -4,7 +4,7 @@ process = cms.Process('L1TEMULATION')
 
 process.load('Configuration.StandardSequences.Services_cff')
 process.load('FWCore.MessageService.MessageLogger_cfi')
-process.load('Configuration/StandardSequences/FrontierConditions_GlobalTag_cff')
+process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
 process.load('Configuration.EventContent.EventContent_cff')
 process.load('Configuration.Geometry.GeometryIdeal_cff')
 
@@ -12,29 +12,24 @@ process.load('Configuration.Geometry.GeometryIdeal_cff')
 process.load('FWCore.MessageService.MessageLogger_cfi')
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(10)
+    input = cms.untracked.int32(100)
     )
 
 # Input source
 process.source = cms.Source("PoolSource",
     secondaryFileNames = cms.untracked.vstring(),
                             fileNames = cms.untracked.vstring(
-'root://xrootd.unl.edu//store/user/icali/HIHighPt/HIMinBiasUPC_Skim_HLT_HIJet55_v2/72e9032319e369ee7d3493bb45d1ee7d/SD_HIJet55_1001_1_f4s.root'
+'root://xrootd.cmsaf.mit.edu//store/user/icali/HIMinBiasUPC/HIMinBiasUPC_Skim_HLT_HIMinBiasHfOrBSC_Centrality0-10//64ca16868e481177958780733023cfa2/SD_MB_Cen0_10_166_1_NpX.root'
                             )
 )
 
 process.options = cms.untracked.PSet()
 
 # Other statements
-from Configuration.AlCa.GlobalTag import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, 'GR_P_V27A::All', '')
-process.GlobalTag.connect = cms.string('frontier://FrontierProd/CMS_COND_31X_GLOBALTAG')
+from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
+process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run1_data', '')
 
-# Conditionally load this file only if we are in 750pre1 or newer
-import os
-cmsswVersion = os.environ['CMSSW_VERSION']
-if cmsswVersion >= "CMSSW_7_5":
-    process.load('L1Trigger.L1TCalorimeter.caloConfigStage1HI_cfi')
+process.load('L1Trigger.L1TCalorimeter.caloConfigStage1HI_cfi')
 process.load('L1Trigger.L1TCalorimeter.L1TCaloStage1_HIFromRaw_cff')
 
 process.p1 = cms.Path(
