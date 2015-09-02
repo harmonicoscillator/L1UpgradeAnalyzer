@@ -4,7 +4,7 @@ process = cms.Process('L1TEMULATION')
 
 process.load('Configuration.StandardSequences.Services_cff')
 process.load('FWCore.MessageService.MessageLogger_cfi')
-process.load('Configuration/StandardSequences/FrontierConditions_GlobalTag_cff')
+process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
 process.load('Configuration.EventContent.EventContent_cff')
 process.load('Configuration.Geometry.GeometryIdeal_cff')
 
@@ -19,7 +19,8 @@ process.maxEvents = cms.untracked.PSet(
 process.source = cms.Source("PoolSource",
     secondaryFileNames = cms.untracked.vstring(),
                             fileNames = cms.untracked.vstring(
-"/store/user/mnguyen/Hydjet_Quenched_MinBias_5020GeV/HydjetMB_740pre8_MCHI2_74_V3_53XBS_DIGI-RAW/6da45e4e90741bc03dbd9aec5f36c050/step2_DIGI_L1_DIGI2RAW_HLT_RAW2DIGI_L1Reco_100_1_nRy.root"
+#"/store/user/mnguyen/Hydjet_Quenched_MinBias_5020GeV/HydjetMB_740pre8_MCHI2_74_V3_53XBS_DIGI-RAW/6da45e4e90741bc03dbd9aec5f36c050/step2_DIGI_L1_DIGI2RAW_HLT_RAW2DIGI_L1Reco_100_1_nRy.root"
+                                "file:/afs/cern.ch/work/g/ginnocen/public/FilesForUnpackers/skim_10_1_wd2.root"
 
                             )
 )
@@ -28,18 +29,13 @@ process.options = cms.untracked.PSet()
 
 # Other statements
 from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag as customiseGlobalTag
-process.GlobalTag = customiseGlobalTag(process.GlobalTag, globaltag = 'MCHI2_74_V3')
-process.GlobalTag.connect   = 'frontier://FrontierProd/CMS_CONDITIONS'
+process.GlobalTag = customiseGlobalTag(process.GlobalTag, globaltag = 'auto:run2_mc_HIon')
 
-# Conditionally load this file only if we are in 750pre1 or newer
-import os
-cmsswVersion = os.environ['CMSSW_VERSION']
-if cmsswVersion >= "CMSSW_7_5":
-    process.load('L1Trigger.L1TCalorimeter.caloConfigStage1HI_cfi')
+process.load('L1Trigger.L1TCalorimeter.caloConfigStage1HI_cfi')
 # Use PPFromRaw because it grabs the MC info correctly, then change parameters
 # to match the HI emulator.
 process.load('L1Trigger.L1TCalorimeter.L1TCaloStage1_PPFromRaw_cff')
-process.simCaloStage1Digis.FirmwareVersion = cms.uint32(1)
+process.load('L1Trigger.L1TCalorimeter.caloStage1RCTLuts_cff')
 process.caloStage1Params.jetSeedThreshold = cms.double(0.)
 process.RCTConfigProducers.eicIsolationThreshold = cms.uint32(7)
 process.RCTConfigProducers.hOeCut = cms.double(999)
