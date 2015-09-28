@@ -45,6 +45,19 @@ process.RCTConfigProducers.hMinForHoECut = cms.double(999)
 process.RCTConfigProducers.eMinForFGCut = cms.double(999)
 
 
+### mask 4 and 17
+# process.caloStage1Params.regionPUSParams = cms.vdouble((0, 0, 0, 0,
+#                                                         1, 0, 0, 0, 0, 0, 0,
+#                                                         0, 0, 0, 0, 0, 0, 1,
+#                                                         0, 0, 0, 0))
+
+### no mask
+process.caloStage1Params.regionPUSParams = cms.vdouble((0, 0, 0, 0,
+                                                        0, 0, 0, 0, 0, 0, 0,
+                                                        0, 0, 0, 0, 0, 0, 0,
+                                                        0, 0, 0, 0))
+
+
 process.p1 = cms.Path(
     process.L1TCaloStage1_PPFromRaw
 )
