@@ -9,6 +9,7 @@
 #include "TCanvas.h"
 #include "TString.h"
 #include "TCut.h"
+#include "TLegend.h"
 
 void plotL1Digis(TString inputFile = "L1UnpackedPureEmulator.root")
 {
@@ -87,10 +88,10 @@ void plotL1Digis(TString inputFile = "L1UnpackedPureEmulator.root")
 
     divs[i]->Divide(hists[i][1], hists[i][0]);
     for (int m=1;m<=hists[i][1]->GetNbinsX();m++){
-    
+
     if(hists[i][1]->GetBinContent(m)==hists[i][0]->GetBinContent(m)) divs[i]->SetBinContent(m,1);
     }
-        
+
     hists[i][0]->SetLineWidth(5);
 
     hists[i][0]->SetMarkerColor(kRed);
@@ -106,8 +107,8 @@ void plotL1Digis(TString inputFile = "L1UnpackedPureEmulator.root")
     legend->SetFillColor(0);
     legend->SetLineColor(kGray+2);
     legend->SetTextFont(42);
-    ent=legend->AddEntry(hists[i][0],"Emulator","F");
-    ent=legend->AddEntry(hists[i][1],"Unpacked","F");
+    legend->AddEntry(hists[i][0],"Emulator","F");
+    legend->AddEntry(hists[i][1],"Unpacked","F");
     legend->Draw();
 
 
@@ -118,5 +119,16 @@ void plotL1Digis(TString inputFile = "L1UnpackedPureEmulator.root")
 
 
     c[i]->SaveAs(Form("figs/%s.gif",labels[i].Data()));
+  }
+}
+
+int main(int argc, char **argv)
+{
+  if(argc == 2)
+  {
+    plotL1Digis(argv[1]);
+    return 0;
+  } else {
+    return 1;
   }
 }
