@@ -42,16 +42,16 @@ void plotL1Digis(TString inputFile = "L1UnpackedPureEmulator.root")
 			         "tau_hwPt", "tau_hwEta", "tau_hwPhi",
 			         "isotau_hwPt", "isotau_hwEta", "isotau_hwPhi"};
 
-  TCut projectioncuts[nHISTS] = {"", "", "",
-				 "", "", "",
-				 "(jet_hwQual&0x2)!=0x2","(jet_hwQual&0x2)!=0x2","(jet_hwQual&0x2)!=0x2",
-				 "(jet_hwQual&0x2)==0x2","(jet_hwQual&0x2)==0x2","(jet_hwQual&0x2)==0x2",
-				 "etsum_type==0","etsum_type==1",
-				 "etsum_type==2","etsum_type==2","etsum_type==3","etsum_type==3",
-				 "egamma_hwIso==1", "egamma_hwIso==1", "egamma_hwIso==1",
-				 "egamma_hwIso==0", "egamma_hwIso==0", "egamma_hwIso==0",
-				 "", "", "",
-				 "", "", ""};
+  TCut projectioncuts[nHISTS] = {"legacyregion_bx == 0", "legacyregion_bx == 0", "legacyregion_bx == 0",
+				 "legacyemcand_bx == 0", "legacyemcand_bx == 0", "legacyemcand_bx == 0",
+				 "(jet_hwQual&0x2)!=0x2 && jet_bx==0","(jet_hwQual&0x2)!=0x2 && jet_bx==0","(jet_hwQual&0x2)!=0x2 && jet_bx==0",
+				 "(jet_hwQual&0x2)==0x2 && jet_bx==0","(jet_hwQual&0x2)==0x2 && jet_bx==0","(jet_hwQual&0x2)==0x2 && jet_bx==0",
+				 "etsum_type==0 && etsum_bx==0","etsum_type==1 && etsum_bx==0",
+				 "etsum_type==2 && etsum_bx==0","etsum_type==2 && etsum_bx==0","etsum_type==3 && etsum_bx==0","etsum_type==3 && etsum_bx==0",
+				 "egamma_hwIso==1 && egamma_bx==0", "egamma_hwIso==1 && egamma_bx==0", "egamma_hwIso==1 && egamma_bx==0",
+				 "egamma_hwIso==0 && egamma_bx==0", "egamma_hwIso==0 && egamma_bx==0", "egamma_hwIso==0 && egamma_bx==0",
+				 "tau_bx==0", "tau_bx==0", "tau_bx==0",
+				 "isotau_bx==0", "isotau_bx==0", "isotau_bx==0"};
   Int_t minBin[nHISTS] = {0, 0, 0,
 			  0, 0, 0,
 			  0, 0, 0,

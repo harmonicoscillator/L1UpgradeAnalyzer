@@ -12,7 +12,7 @@ process.load('Configuration.Geometry.GeometryIdeal_cff')
 process.load('FWCore.MessageService.MessageLogger_cfi')
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(-1)
+    input = cms.untracked.int32(100)
     )
 
 # Input source
@@ -20,7 +20,7 @@ process.source = cms.Source("PoolSource",
     secondaryFileNames = cms.untracked.vstring(),
                             fileNames = cms.untracked.vstring(
                                 #"file:/afs/cern.ch/user/r/richard/EMULATOR/HI_TESTING/txt_unpacking/CMSSW_7_5_2/src/EventFilter/L1TRawToDigi/utils/l1tCalo_2015_EDM.root"
-                                "file:/afs/cern.ch/work/r/richard/public/HI_L1_FirmwareTesting/l1tCalo_EDM.root"
+                                "file:/afs/cern.ch/work/g/ginnocen/public/FirmwareTestsHI/edmfiles/l1tCalo_EDM_run258158_ls0341_streamExpress.root"
                             )
                             )
 
