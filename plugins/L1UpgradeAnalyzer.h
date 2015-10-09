@@ -80,7 +80,7 @@ namespace l1t {
       bool doLayer1 = true;
       //bool doTaus = true;
       //bool doIsoTaus = true;
-      //bool doLegacyRct = true;
+      bool doLegacyRct = true;
 
       edm::Service<TFileService> fs;
       TTree *UpgradeTree;

@@ -12,7 +12,7 @@ process.load('Configuration.Geometry.GeometryIdeal_cff')
 process.load('FWCore.MessageService.MessageLogger_cfi')
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(100)
+    input = cms.untracked.int32(-1)
     )
 
 # Input source
@@ -20,7 +20,9 @@ process.source = cms.Source("PoolSource",
     secondaryFileNames = cms.untracked.vstring(),
                             fileNames = cms.untracked.vstring(
                                 #"file:/afs/cern.ch/user/r/richard/EMULATOR/HI_TESTING/txt_unpacking/CMSSW_7_5_2/src/EventFilter/L1TRawToDigi/utils/l1tCalo_2015_EDM.root"
-                                "file:/afs/cern.ch/work/g/ginnocen/public/FirmwareTestsHI/edmfiles/l1tCalo_EDM_run258158_ls0341_streamExpress.root"
+                                #"file:/afs/cern.ch/work/r/richard/public/HI_L1_FirmwareTesting/l1tCalo_EDM.root"
+                                #"file:/afs/cern.ch/work/r/richard/public/HI_L1_FirmwareTesting/l1tCalo_EDM_258158.root"
+                                "file:/afs/cern.ch/user/r/richard/EMULATOR/HI_TESTING/txt_unpacking/CMSSW_7_5_2/src/EventFilter/L1TRawToDigi/utils/test7oct4PM_100HICentralEvents.root"
                             )
                             )
 
@@ -28,7 +30,7 @@ process.options = cms.untracked.PSet()
 
 # Other statements
 from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run1_data', '')
+process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_data', '')
 
 process.load('L1Trigger.L1TCalorimeter.caloConfigStage1HI_cfi')
 process.load('L1Trigger.L1TCalorimeter.L1TCaloStage1_HIFromRaw_cff')
@@ -78,7 +80,7 @@ process.p1 = cms.Path(
     )
 
 process.TFileService = cms.Service("TFileService",
-                                   fileName = cms.string("L1UpackedReEmulator.root")
+                                   fileName = cms.string("L1UnpackedReEmulator_test7oct4PM_100HICentralEvents.root")
 )
 
 process.EmulatorResults = cms.EDAnalyzer('l1t::L1UpgradeAnalyzer',
@@ -86,8 +88,8 @@ process.EmulatorResults = cms.EDAnalyzer('l1t::L1UpgradeAnalyzer',
                                          InputLayer2TauCollection = cms.InputTag("simCaloStage1FinalDigis:rlxTaus"),
                                          InputLayer2IsoTauCollection = cms.InputTag("simCaloStage1FinalDigis:isoTaus"),
                                          InputLayer2CaloSpareCollection = cms.InputTag("simCaloStage1FinalDigis:HFRingSums"),
-                                         InputLayer1Collection = cms.InputTag("simRctUpgradeFormatDigis"),
-                                         legacyRCTDigis = cms.InputTag("caloStage1Digis")
+                                         InputLayer1Collection = cms.InputTag("None"),
+                                         legacyRCTDigis = cms.InputTag("None")
 )
 
 process.UnpackerResults = cms.EDAnalyzer('l1t::L1UpgradeAnalyzer',
@@ -95,7 +97,7 @@ process.UnpackerResults = cms.EDAnalyzer('l1t::L1UpgradeAnalyzer',
                                          InputLayer2TauCollection = cms.InputTag("caloStage1Digis:rlxTaus"),
                                          InputLayer2IsoTauCollection = cms.InputTag("caloStage1Digis:isoTaus"),
                                          InputLayer2CaloSpareCollection = cms.InputTag("caloStage1Digis:HFRingSums"),
-                                         InputLayer1Collection = cms.InputTag("simRctUpgradeFormatDigis"),
+                                         InputLayer1Collection = cms.InputTag("None"),
                                          legacyRCTDigis = cms.InputTag("caloStage1Digis")
 )
 

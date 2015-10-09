@@ -61,6 +61,7 @@ process.source = cms.Source("PoolSource",
     ## 10
 #'/store/user/icali/HIMinBiasUPC/HIMinBiasUPC_Skim_HLT_HIMinBiasHfOrBSC_Centrality0-10//64ca16868e481177958780733023cfa2/SD_MB_Cen0_10_126_1_pCl.root',
 #'/store/user/icali/HIMinBiasUPC/HIMinBiasUPC_Skim_HLT_HIMinBiasHfOrBSC_Centrality0-10//64ca16868e481177958780733023cfa2/SD_MB_Cen0_10_128_1_FuJ.root',
+    #"file:/afs/cern.ch/work/r/richard/public/HI_L1_FirmwareTesting/Mismatched_HI_Jets_RAW.root"
                             )
 )
 
@@ -68,10 +69,19 @@ process.options = cms.untracked.PSet()
 
 # Other statements
 from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run1_data', '')
+process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_data', '')
 
 process.load('L1Trigger.L1TCalorimeter.caloConfigStage1HI_cfi')
 process.load('L1Trigger.L1TCalorimeter.L1TCaloStage1_HIFromRaw_cff')
+#process.load("L1Trigger.L1TCalorimeter.L1TCaloStage1_PPFromRaw_cff")
+#process.load('L1Trigger.L1TCalorimeter.caloStage1RCTLuts_cff')
+#process.caloStage1Params.jetSeedThreshold = cms.double(0.)
+#process.RCTConfigProducers.eicIsolationThreshold = cms.uint32(7)
+#process.RCTConfigProducers.hOeCut = cms.double(999)
+#process.RCTConfigProducers.eMinForHoECut = cms.double(999)
+#process.RCTConfigProducers.eMaxForHoECut = cms.double(999)
+#process.RCTConfigProducers.hMinForHoECut = cms.double(999)
+#process.RCTConfigProducers.eMinForFGCut = cms.double(999)
 
 ### mask 4 and 17
 # process.caloStage1Params.regionPUSParams = cms.vdouble((0, 0, 0, 0,

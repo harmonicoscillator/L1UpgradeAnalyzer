@@ -18,10 +18,13 @@ void plotL1Digis(TString inputFile = "L1UnpackedPureEmulator.root")
   TFile *inFile = TFile::Open(inputFile);
   TTree *emulatorResults = (TTree*)inFile->Get("EmulatorResults/L1UpgradeTree");
   TTree *unpackerResults = (TTree*)inFile->Get("UnpackerResults/L1UpgradeTree");
+  //emulatorResults->SetName("emu");
+  //unpackerResults->SetName("unp");
+  unpackerResults->AddFriend(emulatorResults,"emu");
 
-  const int nHISTS = 30;
-  TString labels[nHISTS] = {"region_et", "region_eta", "region_phi",
-			    "egcand_rank", "egcand_eta", "egcand_phi",
+  const int nHISTS = 24;
+  TString labels[nHISTS] = {/*"region_et", "region_eta", "region_phi",
+			      "egcand_rank", "egcand_eta", "egcand_phi",*/
 			    "central_jet_hwPt", "central_jet_hwEta", "central_jet_hwPhi",
 			    "forward_jet_hwPt", "forward_jet_hwEta", "forward_jet_hwPhi",
 			    "ETT", "HTT",
@@ -31,8 +34,8 @@ void plotL1Digis(TString inputFile = "L1UnpackedPureEmulator.root")
 			    "tau_hwPt", "tau_hwEta", "tau_hwPhi",
 			    "isotau_hwPt", "isotau_hwEta", "isotau_hwPhi"};
 
-  TString projectionnames[nHISTS] = {"legacyregion_et", "legacyregion_gctEta", "legacyregion_gctPhi",
-				     "legacyemcand_rank", "legacyemcand_regionEta", "legacyemcand_regionPhi",
+  TString projectionnames[nHISTS] = {/*"legacyregion_et", "legacyregion_gctEta", "legacyregion_gctPhi",
+				       "legacyemcand_rank", "legacyemcand_regionEta", "legacyemcand_regionPhi",*/
 				     "jet_hwPt", "jet_hwEta", "jet_hwPhi",
 				     "jet_hwPt", "jet_hwEta", "jet_hwPhi",
 				     "etsum_hwPt", "etsum_hwPt",
@@ -42,8 +45,8 @@ void plotL1Digis(TString inputFile = "L1UnpackedPureEmulator.root")
 			         "tau_hwPt", "tau_hwEta", "tau_hwPhi",
 			         "isotau_hwPt", "isotau_hwEta", "isotau_hwPhi"};
 
-  TCut projectioncuts[nHISTS] = {"legacyregion_bx == 0", "legacyregion_bx == 0", "legacyregion_bx == 0",
-				 "legacyemcand_bx == 0", "legacyemcand_bx == 0", "legacyemcand_bx == 0",
+  TCut projectioncuts[nHISTS] = {/*"legacyregion_bx == 0", "legacyregion_bx == 0", "legacyregion_bx == 0",
+				   "legacyemcand_bx == 0", "legacyemcand_bx == 0", "legacyemcand_bx == 0",*/
 				 "(jet_hwQual&0x2)!=0x2 && jet_bx==0","(jet_hwQual&0x2)!=0x2 && jet_bx==0","(jet_hwQual&0x2)!=0x2 && jet_bx==0",
 				 "(jet_hwQual&0x2)==0x2 && jet_bx==0","(jet_hwQual&0x2)==0x2 && jet_bx==0","(jet_hwQual&0x2)==0x2 && jet_bx==0",
 				 "etsum_type==0 && etsum_bx==0","etsum_type==1 && etsum_bx==0",
@@ -52,8 +55,8 @@ void plotL1Digis(TString inputFile = "L1UnpackedPureEmulator.root")
 				 "egamma_hwIso==0 && egamma_bx==0", "egamma_hwIso==0 && egamma_bx==0", "egamma_hwIso==0 && egamma_bx==0",
 				 "tau_bx==0", "tau_bx==0", "tau_bx==0",
 				 "isotau_bx==0", "isotau_bx==0", "isotau_bx==0"};
-  Int_t minBin[nHISTS] = {0, 0, 0,
-			  0, 0, 0,
+  Int_t minBin[nHISTS] = {/*0, 0, 0,
+			    0, 0, 0,*/
 			  0, 0, 0,
 			  0, 0, 0,
 			  0, 0,
@@ -62,8 +65,8 @@ void plotL1Digis(TString inputFile = "L1UnpackedPureEmulator.root")
 			  0, 0, 0,
 			  0, 0, 0,
 			  0, 0, 0};
-  Int_t maxBin[nHISTS] = {40, 22, 25,
-			  64, 22, 25,
+  Int_t maxBin[nHISTS] = {/*40, 22, 25,
+			    64, 22, 25,*/
 			  64,22,25,
 			  64,22,25,
 			  600, 300,
@@ -83,8 +86,8 @@ void plotL1Digis(TString inputFile = "L1UnpackedPureEmulator.root")
     hists[i][1] = (TH1I*)hists[i][0]->Clone(labels[i]+"unpacked");
     divs[i] = new TH1D(labels[i]+"div", ";"+labels[i], maxBin[i]-minBin[i], minBin[i], maxBin[i]);
 
-    emulatorResults->Project(hists[i][0]->GetName(), projectionnames[i], projectioncuts[i]);
-    unpackerResults->Project(hists[i][1]->GetName(), projectionnames[i], projectioncuts[i]);
+    emulatorResults->Project(hists[i][0]->GetName(), projectionnames[i], projectioncuts[i]&&"nJet==8");
+    unpackerResults->Project(hists[i][1]->GetName(), projectionnames[i], projectioncuts[i]&&"emu.nJet==8");
 
     divs[i]->Divide(hists[i][1], hists[i][0]);
     for (int m=1;m<=hists[i][1]->GetNbinsX();m++){
@@ -107,8 +110,8 @@ void plotL1Digis(TString inputFile = "L1UnpackedPureEmulator.root")
     legend->SetFillColor(0);
     legend->SetLineColor(kGray+2);
     legend->SetTextFont(42);
-    legend->AddEntry(hists[i][0],"Emulator","F");
-    legend->AddEntry(hists[i][1],"Unpacked","F");
+    legend->AddEntry(hists[i][0],"Emulator","l");
+    legend->AddEntry(hists[i][1],"Unpacked","l");
     legend->Draw();
 
 

@@ -27,8 +27,14 @@ l1t::L1UpgradeAnalyzer::L1UpgradeAnalyzer(const edm::ParameterSet& ps) {
   else
     doLayer1 = false;
 
-  legacyRegionToken_ = consumes<L1CaloRegionCollection>(ps.getParameter<edm::InputTag>("legacyRCTDigis"));
-  legacyEmCandToken_ = consumes<L1CaloEmCollection>(ps.getParameter<edm::InputTag>("legacyRCTDigis"));
+  edm::InputTag rctLabel = ps.getParameter<edm::InputTag>("legacyRCTDigis");
+  if(rctLabel.label() != "None")
+  {
+    legacyRegionToken_ = consumes<L1CaloRegionCollection>(rctLabel);
+    legacyEmCandToken_ = consumes<L1CaloEmCollection>(rctLabel);
+  }
+  else
+    doLegacyRct = false;
 }
 
 l1t::L1UpgradeAnalyzer::~L1UpgradeAnalyzer() {}
@@ -38,12 +44,12 @@ void
 l1t::L1UpgradeAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
   // boilerplate
-  
-  //edm::Handle<FEDRawDataCollection> rawdata;  
+
+  //edm::Handle<FEDRawDataCollection> rawdata;
   //iEvent.getByToken(FEDRawToken_, rawdata);
   //const FEDRawData& data = rawdata->FEDData(1352);
   //FEDHeader header(data.data());
-  
+
   edm::Handle<l1t::EGammaBxCollection> egammas;
   edm::Handle<l1t::TauBxCollection> taus;
   edm::Handle<l1t::TauBxCollection> isotaus;
@@ -69,8 +75,11 @@ l1t::L1UpgradeAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
     iEvent.getByToken(EmCandToken_, emcands);
   }
 
-  iEvent.getByToken(legacyRegionToken_, legacyregions);
-  iEvent.getByToken(legacyEmCandToken_, legacyemcands);
+  if(doLegacyRct)
+  {
+    iEvent.getByToken(legacyRegionToken_, legacyregions);
+    iEvent.getByToken(legacyEmCandToken_, legacyemcands);
+  }
 
   // Begin analysis
   event = iEvent.id().event();
@@ -253,34 +262,36 @@ l1t::L1UpgradeAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
     }
   }
 
-
-  for(std::vector<L1CaloRegion>::const_iterator rgn=legacyregions->begin(); rgn!=legacyregions->end(); ++rgn)
+  if(doLegacyRct)
   {
-    legacyregion_raw[nLegacyRegions] = rgn->raw();
-    legacyregion_et[nLegacyRegions] = rgn->et();
-    legacyregion_gctEta[nLegacyRegions] = rgn->id().ieta();
-    legacyregion_gctPhi[nLegacyRegions] = rgn->id().iphi();
-    legacyregion_crate[nLegacyRegions] = rgn->rctCrate();
-    legacyregion_card[nLegacyRegions] = rgn->rctCard();
-    legacyregion_index[nLegacyRegions] = rgn->rctRegionIndex();
-    legacyregion_bx[nLegacyRegions] = rgn->bx();
+    for(std::vector<L1CaloRegion>::const_iterator rgn=legacyregions->begin(); rgn!=legacyregions->end(); ++rgn)
+    {
+      legacyregion_raw[nLegacyRegions] = rgn->raw();
+      legacyregion_et[nLegacyRegions] = rgn->et();
+      legacyregion_gctEta[nLegacyRegions] = rgn->id().ieta();
+      legacyregion_gctPhi[nLegacyRegions] = rgn->id().iphi();
+      legacyregion_crate[nLegacyRegions] = rgn->rctCrate();
+      legacyregion_card[nLegacyRegions] = rgn->rctCard();
+      legacyregion_index[nLegacyRegions] = rgn->rctRegionIndex();
+      legacyregion_bx[nLegacyRegions] = rgn->bx();
 
-    nLegacyRegions++;
-  }
+      nLegacyRegions++;
+    }
 
-  for (std::vector<L1CaloEmCand>::const_iterator em=legacyemcands->begin(); em!=legacyemcands->end(); ++em)
-  {
-    legacyemcand_raw[nLegacyEmCands] = em->raw();
-    legacyemcand_rank[nLegacyEmCands] = em->rank();
-    legacyemcand_regionEta[nLegacyEmCands] = em->regionId().ieta();
-    legacyemcand_regionPhi[nLegacyEmCands] = em->regionId().iphi();
-    legacyemcand_crate[nLegacyEmCands] = em->rctCrate();
-    legacyemcand_card[nLegacyEmCands] = em->rctCard();
-    legacyemcand_index[nLegacyEmCands] = em->index();
-    legacyemcand_iso[nLegacyEmCands] = em->isolated();
-    legacyemcand_bx[nLegacyEmCands] = em->bx();
+    for (std::vector<L1CaloEmCand>::const_iterator em=legacyemcands->begin(); em!=legacyemcands->end(); ++em)
+    {
+      legacyemcand_raw[nLegacyEmCands] = em->raw();
+      legacyemcand_rank[nLegacyEmCands] = em->rank();
+      legacyemcand_regionEta[nLegacyEmCands] = em->regionId().ieta();
+      legacyemcand_regionPhi[nLegacyEmCands] = em->regionId().iphi();
+      legacyemcand_crate[nLegacyEmCands] = em->rctCrate();
+      legacyemcand_card[nLegacyEmCands] = em->rctCard();
+      legacyemcand_index[nLegacyEmCands] = em->index();
+      legacyemcand_iso[nLegacyEmCands] = em->isolated();
+      legacyemcand_bx[nLegacyEmCands] = em->bx();
 
-    nLegacyEmCands++;
+      nLegacyEmCands++;
+    }
   }
 
   UpgradeTree->Fill();
@@ -491,28 +502,29 @@ l1t::L1UpgradeAnalyzer::beginJob()
     UpgradeTree->Branch("emcand_bx",emcand_bx,"emcand_bx[nEMCands]/I");
   }
 
-  UpgradeTree->Branch("nLegacyRegions",&nLegacyRegions,"nLegacyRegions/I");
-  UpgradeTree->Branch("legacyregion_raw",legacyregion_raw,"legacyregion_raw[nLegacyRegions]/I");
-  UpgradeTree->Branch("legacyregion_et",legacyregion_et,"legacyregion_et[nLegacyRegions]/I");
-  UpgradeTree->Branch("legacyregion_gctEta",legacyregion_gctEta,"legacyregion_gctEta[nLegacyRegions]/I");
-  UpgradeTree->Branch("legacyregion_gctPhi",legacyregion_gctPhi,"legacyregion_gctPhi[nLegacyRegions]/I");
-  UpgradeTree->Branch("legacyregion_crate",legacyregion_crate,"legacyregion_crate[nLegacyRegions]/I");
-  UpgradeTree->Branch("legacyregion_card",legacyregion_card,"legacyregion_card[nLegacyRegions]/I");
-  UpgradeTree->Branch("legacyregion_index",legacyregion_index,"legacyregion_index[nLegacyRegions]/I");
-  UpgradeTree->Branch("legacyregion_bx",legacyregion_bx,"legacyregion_bx[nLegacyRegions]/I");
+  if(doLegacyRct)
+  {
+    UpgradeTree->Branch("nLegacyRegions",&nLegacyRegions,"nLegacyRegions/I");
+    UpgradeTree->Branch("legacyregion_raw",legacyregion_raw,"legacyregion_raw[nLegacyRegions]/I");
+    UpgradeTree->Branch("legacyregion_et",legacyregion_et,"legacyregion_et[nLegacyRegions]/I");
+    UpgradeTree->Branch("legacyregion_gctEta",legacyregion_gctEta,"legacyregion_gctEta[nLegacyRegions]/I");
+    UpgradeTree->Branch("legacyregion_gctPhi",legacyregion_gctPhi,"legacyregion_gctPhi[nLegacyRegions]/I");
+    UpgradeTree->Branch("legacyregion_crate",legacyregion_crate,"legacyregion_crate[nLegacyRegions]/I");
+    UpgradeTree->Branch("legacyregion_card",legacyregion_card,"legacyregion_card[nLegacyRegions]/I");
+    UpgradeTree->Branch("legacyregion_index",legacyregion_index,"legacyregion_index[nLegacyRegions]/I");
+    UpgradeTree->Branch("legacyregion_bx",legacyregion_bx,"legacyregion_bx[nLegacyRegions]/I");
 
-  UpgradeTree->Branch("nLegacyEmCands",&nLegacyEmCands,"nLegacyEmCands/I");
-  UpgradeTree->Branch("legacyemcand_raw",legacyemcand_raw,"legacyemcand_raw[nLegacyEmCands]/I");
-  UpgradeTree->Branch("legacyemcand_rank",legacyemcand_rank,"legacyemcand_rank[nLegacyEmCands]/I");
-  UpgradeTree->Branch("legacyemcand_regionEta",legacyemcand_regionEta,"legacyemcand_regionEta[nLegacyEmCands]/I");
-  UpgradeTree->Branch("legacyemcand_regionPhi",legacyemcand_regionPhi,"legacyemcand_regionPhi[nLegacyEmCands]/I");
-  UpgradeTree->Branch("legacyemcand_crate",legacyemcand_crate,"legacyemcand_crate[nLegacyEmCands]/I");
-  UpgradeTree->Branch("legacyemcand_card",legacyemcand_card,"legacyemcand_card[nLegacyEmCands]/I");
-  UpgradeTree->Branch("legacyemcand_index",legacyemcand_index,"legacyemcand_index[nLegacyEmCands]/I");
-  UpgradeTree->Branch("legacyemcand_iso",legacyemcand_iso,"legacyemcand_iso[nLegacyEmCands]/I");
-  UpgradeTree->Branch("legacyemcand_bx",legacyemcand_bx,"legacyemcand_bx[nLegacyEmCands]/I");
-
-
+    UpgradeTree->Branch("nLegacyEmCands",&nLegacyEmCands,"nLegacyEmCands/I");
+    UpgradeTree->Branch("legacyemcand_raw",legacyemcand_raw,"legacyemcand_raw[nLegacyEmCands]/I");
+    UpgradeTree->Branch("legacyemcand_rank",legacyemcand_rank,"legacyemcand_rank[nLegacyEmCands]/I");
+    UpgradeTree->Branch("legacyemcand_regionEta",legacyemcand_regionEta,"legacyemcand_regionEta[nLegacyEmCands]/I");
+    UpgradeTree->Branch("legacyemcand_regionPhi",legacyemcand_regionPhi,"legacyemcand_regionPhi[nLegacyEmCands]/I");
+    UpgradeTree->Branch("legacyemcand_crate",legacyemcand_crate,"legacyemcand_crate[nLegacyEmCands]/I");
+    UpgradeTree->Branch("legacyemcand_card",legacyemcand_card,"legacyemcand_card[nLegacyEmCands]/I");
+    UpgradeTree->Branch("legacyemcand_index",legacyemcand_index,"legacyemcand_index[nLegacyEmCands]/I");
+    UpgradeTree->Branch("legacyemcand_iso",legacyemcand_iso,"legacyemcand_iso[nLegacyEmCands]/I");
+    UpgradeTree->Branch("legacyemcand_bx",legacyemcand_bx,"legacyemcand_bx[nLegacyEmCands]/I");
+  }
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
