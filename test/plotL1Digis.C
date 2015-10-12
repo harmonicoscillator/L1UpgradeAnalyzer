@@ -47,14 +47,24 @@ void plotL1Digis(TString inputFile = "L1UnpackedPureEmulator.root")
 
   TCut projectioncuts[nHISTS] = {/*"legacyregion_bx == 0", "legacyregion_bx == 0", "legacyregion_bx == 0",
 				   "legacyemcand_bx == 0", "legacyemcand_bx == 0", "legacyemcand_bx == 0",*/
-				 "(jet_hwQual&0x2)!=0x2 && jet_bx==0","(jet_hwQual&0x2)!=0x2 && jet_bx==0","(jet_hwQual&0x2)!=0x2 && jet_bx==0",
-				 "(jet_hwQual&0x2)==0x2 && jet_bx==0","(jet_hwQual&0x2)==0x2 && jet_bx==0","(jet_hwQual&0x2)==0x2 && jet_bx==0",
-				 "etsum_type==0 && etsum_bx==0","etsum_type==1 && etsum_bx==0",
-				 "etsum_type==2 && etsum_bx==0","etsum_type==2 && etsum_bx==0","etsum_type==3 && etsum_bx==0","etsum_type==3 && etsum_bx==0",
-				 "egamma_hwIso==1 && egamma_bx==0", "egamma_hwIso==1 && egamma_bx==0", "egamma_hwIso==1 && egamma_bx==0",
-				 "egamma_hwIso==0 && egamma_bx==0", "egamma_hwIso==0 && egamma_bx==0", "egamma_hwIso==0 && egamma_bx==0",
-				 "tau_bx==0", "tau_bx==0", "tau_bx==0",
-				 "isotau_bx==0", "isotau_bx==0", "isotau_bx==0"};
+				 "(jet_hwQual&0x2)!=0x2","(jet_hwQual&0x2)!=0x2","(jet_hwQual&0x2)!=0x2",
+				 "(jet_hwQual&0x2)==0x2","(jet_hwQual&0x2)==0x2","(jet_hwQual&0x2)==0x2",
+				 "etsum_type==0","etsum_type==1",
+				 "etsum_type==2","etsum_type==2","etsum_type==3","etsum_type==3",
+				 "egamma_hwIso==1", "egamma_hwIso==1", "egamma_hwIso==1",
+				 "egamma_hwIso==0", "egamma_hwIso==0", "egamma_hwIso==0",
+				 "", "", "",
+				 "", "", ""};
+  TCut projectioncuts_unpacker[nHISTS] = {/*"", "", "",
+					    "", "", "",*/
+					  "jet_bx==-1","jet_bx==-1","jet_bx==-1",
+					  "jet_bx==-1","jet_bx==-1","jet_bx==-1",
+					  "etsum_bx==-1","etsum_bx==-1",
+					  "etsum_bx==-1","etsum_bx==-1","etsum_bx==-1","etsum_bx==-1",
+					  "egamma_bx==-1","egamma_bx==-1","egamma_bx==-1",
+					  "egamma_bx==-1","egamma_bx==-1","egamma_bx==-1",
+					  "tau_bx==-1", "tau_bx==-1", "tau_bx==-1",
+					  "isotau_bx==-1","isotau_bx==-1","isotau_bx==-1"};
   Int_t minBin[nHISTS] = {/*0, 0, 0,
 			    0, 0, 0,*/
 			  0, 0, 0,
@@ -87,7 +97,7 @@ void plotL1Digis(TString inputFile = "L1UnpackedPureEmulator.root")
     divs[i] = new TH1D(labels[i]+"div", ";"+labels[i], maxBin[i]-minBin[i], minBin[i], maxBin[i]);
 
     emulatorResults->Project(hists[i][0]->GetName(), projectionnames[i], projectioncuts[i]&&"nJet==8");
-    unpackerResults->Project(hists[i][1]->GetName(), projectionnames[i], projectioncuts[i]&&"emu.nJet==8");
+    unpackerResults->Project(hists[i][1]->GetName(), projectionnames[i], projectioncuts[i]&&projectioncuts_unpacker[i]&&"emu.nJet==8");
 
     divs[i]->Divide(hists[i][1], hists[i][0]);
     for (int m=1;m<=hists[i][1]->GetNbinsX();m++){
