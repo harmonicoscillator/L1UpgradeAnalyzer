@@ -83,17 +83,6 @@ process.load('L1Trigger.L1TCalorimeter.L1TCaloStage1_HIFromRaw_cff')
 #process.RCTConfigProducers.hMinForHoECut = cms.double(999)
 #process.RCTConfigProducers.eMinForFGCut = cms.double(999)
 
-### mask 4 and 17
-# process.caloStage1Params.regionPUSParams = cms.vdouble((0, 0, 0, 0,
-#                                                         1, 0, 0, 0, 0, 0, 0,
-#                                                         0, 0, 0, 0, 0, 0, 1,
-#                                                         0, 0, 0, 0))
-
-### no mask
-process.caloStage1Params.regionPUSParams = cms.vdouble((0, 0, 0, 0,
-                                                        0, 0, 0, 0, 0, 0, 0,
-                                                        0, 0, 0, 0, 0, 0, 0,
-                                                        0, 0, 0, 0))
 
 process.p1 = cms.Path(
     process.L1TCaloStage1_HIFromRaw
@@ -117,3 +106,92 @@ process.p2 = cms.Path(process.L1UpgradeAnalyzer)
 process.schedule = cms.Schedule(
     process.p1, process.p2
     )
+
+
+# ############### settings
+# ### old standard
+# ### PUS mask
+# process.caloStage1Params.regionPUSParams = cms.vdouble((0, 0, 0, 0,
+#                                                        0, 0, 0, 0, 0, 0, 0,
+#                                                        0, 0, 0, 0, 0, 0, 0,
+#                                                        0, 0, 0, 0))
+# ### EG 'iso' (eta) mask
+# process.caloStage1Params.isoTauEtaMin = cms.int32(0b1111110000000000111111) # 6<= eta <= 15
+
+# ### Single track eta mask
+# process.caloStage1Params.isoTauEtaMax = cms.int32(0b1111111100000011111111) # 8 <= eta <= 13
+
+# ### jet seed threshold for 3x3 step of jet finding
+# process.caloStage1Params.jetSeedThreshold = cms.double(0)
+
+# ### Zeros
+# ### PUS mask
+# process.caloStage1Params.regionPUSParams = cms.vdouble((0, 0, 0, 0,
+#                                                        0, 0, 0, 0, 0, 0, 0,
+#                                                        0, 0, 0, 0, 0, 0, 0,
+#                                                        0, 0, 0, 0))
+# ### EG 'iso' (eta) mask
+# process.caloStage1Params.isoTauEtaMin = cms.int32(0b1111111111111111111111) #currently the inversion of FW
+
+# ### Single track eta mask
+# process.caloStage1Params.isoTauEtaMax = cms.int32(0b1111000000000000001111) #forward taus are bugs
+
+# ### jet seed threshold for 3x3 step of jet finding
+# process.caloStage1Params.jetSeedThreshold = cms.double(0)
+
+# ### HTT settings (this won't match anyway yet)
+# process.caloStage1Params.etSumEtThreshold        = cms.vdouble(0., 0.) #ET, HT
+
+### nominal
+### PUS mask
+process.caloStage1Params.regionPUSParams = cms.vdouble((0, 0, 0, 0,
+                                                       1, 0, 0, 0, 0, 0, 0,
+                                                       0, 0, 0, 0, 0, 0, 1,
+                                                       0, 0, 0, 0))
+### EG 'iso' (eta) mask
+process.caloStage1Params.isoTauEtaMin = cms.int32(0b1111110000000000111111) #currently the inversion of FW
+
+### Single track eta mask
+process.caloStage1Params.isoTauEtaMax = cms.int32(0b1111111100000011111111) #forward taus are bugs
+
+### jet seed threshold for 3x3 step of jet finding
+process.caloStage1Params.jetSeedThreshold = cms.double(0)
+
+### HTT settings (this won't match anyway yet)
+process.caloStage1Params.etSumEtThreshold        = cms.vdouble(0., 7.) #ET, HT
+
+# ### left side
+# ### PUS mask
+# process.caloStage1Params.regionPUSParams = cms.vdouble((1, 1, 1, 1,
+#                                                        1, 1, 1, 1, 1, 1, 1,
+#                                                        0, 0, 0, 0, 0, 0, 0,
+#                                                        0, 0, 0, 0))
+# ### EG 'iso' (eta) mask
+# process.caloStage1Params.isoTauEtaMin = cms.int32(0b0000000000011111111111) #currently the inversion of FW
+
+# ### Single track eta mask
+# process.caloStage1Params.isoTauEtaMax = cms.int32(0b1111111111100000001111) #forward taus are bugs
+
+# ### jet seed threshold for 3x3 step of jet finding
+# process.caloStage1Params.jetSeedThreshold = cms.double(5)
+
+# ### HTT settings (this won't match anyway yet)
+# process.caloStage1Params.etSumEtThreshold        = cms.vdouble(0., 0.) #ET, HT
+
+# ### alternating
+# ### PUS mask
+# process.caloStage1Params.regionPUSParams = cms.vdouble((1, 0, 1, 0,
+#                                                         1, 0, 1, 0, 1, 0, 1,
+#                                                         0, 1, 0, 1, 0, 1, 0,
+#                                                         1, 0, 1, 0))
+# ### EG 'iso' (eta) mask
+# process.caloStage1Params.isoTauEtaMin = cms.int32(0b0101010101010101010101) #currently the inversion of FW
+
+# ### Single track eta mask
+# process.caloStage1Params.isoTauEtaMax = cms.int32(0b1111010101010101011111) #forward taus are bugs
+
+# ### jet seed threshold for 3x3 step of jet finding
+# process.caloStage1Params.jetSeedThreshold = cms.double(2.5)
+
+# ### HTT settings (this won't match anyway yet)
+# process.caloStage1Params.etSumEtThreshold        = cms.vdouble(0., 40.) #ET, HT

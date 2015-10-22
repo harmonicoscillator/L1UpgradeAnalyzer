@@ -308,7 +308,7 @@ l1t::L1UpgradeAnalyzer::beginJob()
   UpgradeTree->Branch("lumi", &lumi, "lumi/I");
   //UpgradeTree->Branch("FEDBXID", &FEDBXID, "FEDBXID/I");
 
-  const unsigned int MAXSIZE = 1000;
+  const unsigned int MAXSIZE = 5000;
 
   jet_hwPt = new int[MAXSIZE];
   jet_hwEta = new int[MAXSIZE];
