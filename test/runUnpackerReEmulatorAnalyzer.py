@@ -31,7 +31,9 @@ process.source = cms.Source("PoolSource",
                                 #'file:/afs/cern.ch/work/r/richard/public/HI_L1_FirmwareTesting/RUN_259324/run259324_ls0001_streamPhysicsEGammaCommissioning_StorageManager.dat_Digis_numEvent10000.root'
                                 #'file:/afs/cern.ch/work/r/richard/public/HI_L1_FirmwareTesting/RUN_259352/l1tCalo_EDM_259352.root'
                                 #'file:/afs/cern.ch/work/r/richard/public/HI_L1_FirmwareTesting/RUN_259637/l1tCalo_EDM_259637.root'
-                                'file:/afs/cern.ch/work/r/richard/public/HI_L1_FirmwareTesting/RUN_259637_centralityMismatches_unpacked.root'
+                                #'file:/afs/cern.ch/work/r/richard/public/HI_L1_FirmwareTesting/RUN_259637_centralityMismatches_unpacked.root'
+                                #'file:/afs/cern.ch/work/r/richard/public/HI_L1_FirmwareTesting/RUN_259818/RUN_259818_unpacked.root'
+                                "file:/afs/cern.ch/work/r/richard/public/HI_L1_FirmwareTesting/RUN_259818/run259818EgammaMismatches_100.root"
                             )
                             )
 
@@ -44,33 +46,36 @@ process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_data', '')
 process.load('L1Trigger.L1TCalorimeter.caloConfigStage1HI_cfi')
 process.load('L1Trigger.L1TCalorimeter.L1TCaloStage1_HIFromRaw_cff')
 
-
+### nominal
 ### PUS mask
-process.caloStage1Params.regionPUSParams = cms.vdouble((0, 0, 0, 0,
-                                                       0, 0, 0, 0, 0, 0, 0,
-                                                       0, 0, 0, 0, 0, 0, 0,
-                                                       0, 0, 0, 0))
+#process.caloStage1Params.jetRegionMask = cms.int32(0b0000100000000000010000)
+process.caloStage1Params.jetRegionMask = cms.int32(0)
 ### EG 'iso' (eta) mask
-process.caloStage1Params.isoTauEtaMin = cms.int32(0b1111110000000000111111) # 6<= eta <= 15
-
+process.caloStage1Params.egEtaCut = cms.int32(0b0000001111111111000000)
 ### Single track eta mask
-process.caloStage1Params.isoTauEtaMax = cms.int32(0b1111111100000011111111) # 8 <= eta <= 13
-
+process.caloStage1Params.tauRegionMask = cms.int32(0b1111111100000011111111)
+### Centrality eta mask
+process.caloStage1Params.centralityRegionMask = cms.int32(0b0000111111111111110000)
 ### jet seed threshold for 3x3 step of jet finding
 process.caloStage1Params.jetSeedThreshold = cms.double(0)
+### HTT settings (this won't match anyway yet)
+process.caloStage1Params.etSumEtThreshold        = cms.vdouble(0., 7.) #ET, HT
 
 
 process.simRctUpgradeFormatDigis.emTag = cms.InputTag("caloStage1Digis")
 process.simRctUpgradeFormatDigis.regionTag = cms.InputTag("caloStage1Digis")
 
+process.load('EventFilter.L1TRawToDigi.caloStage1Digis_cfi')
+
 process.p1 = cms.Path(
+    process.caloStage1Digis +
     process.simRctUpgradeFormatDigis +
     process.simCaloStage1Digis +
     process.simCaloStage1FinalDigis
     )
 
 process.TFileService = cms.Service("TFileService",
-                                   fileName = cms.string("L1UnpackedReEmulator.root")
+                                   fileName = cms.string("L1UnpackedReEmulator_259818_v2.root")
 )
 
 process.EmulatorResults = cms.EDAnalyzer('l1t::L1UpgradeAnalyzer',
