@@ -48,8 +48,8 @@ process.load('L1Trigger.L1TCalorimeter.L1TCaloStage1_HIFromRaw_cff')
 
 ### nominal
 ### PUS mask
-#process.caloStage1Params.jetRegionMask = cms.int32(0b0000100000000000010000)
-process.caloStage1Params.jetRegionMask = cms.int32(0)
+process.caloStage1Params.jetRegionMask = cms.int32(0b0000100000000000010000)
+#process.caloStage1Params.jetRegionMask = cms.int32(0)
 ### EG 'iso' (eta) mask
 process.caloStage1Params.egEtaCut = cms.int32(0b0000001111111111000000)
 ### Single track eta mask
@@ -60,7 +60,8 @@ process.caloStage1Params.centralityRegionMask = cms.int32(0b00001111111111111100
 process.caloStage1Params.jetSeedThreshold = cms.double(0)
 ### HTT settings (this won't match anyway yet)
 process.caloStage1Params.etSumEtThreshold        = cms.vdouble(0., 7.) #ET, HT
-
+### Minimum Bias thresholds
+process.caloStage1Params.minimumBiasThresholds = cms.vint32(4,4,6,6)
 
 process.simRctUpgradeFormatDigis.emTag = cms.InputTag("caloStage1Digis")
 process.simRctUpgradeFormatDigis.regionTag = cms.InputTag("caloStage1Digis")
