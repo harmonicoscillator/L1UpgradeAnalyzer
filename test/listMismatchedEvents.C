@@ -5,6 +5,7 @@
 #include "TFile.h"
 #include "TTree.h"
 #include <iostream>
+#include <bitset>
 
 void listMismatchedEvents(TString inputFile = "L1UnpackedPureEmulator.root")
 {
@@ -18,19 +19,27 @@ void listMismatchedEvents(TString inputFile = "L1UnpackedPureEmulator.root")
   emulatorResults->SetBranchAddress("run",&run);
   emulatorResults->SetBranchAddress("lumi",&lumi);
 
-  int e_hfring_hwPt[40];
-  int e_hfring_bx[40];
-  int e_nHfring;
-  int u_hfring_hwPt[40];
-  int u_hfring_bx[40];
-  int u_nHfring;
+  int e_tau_hwPt[40];
+  int e_tau_hwEta[40];
+  int e_tau_hwPhi[40];
+  int e_tau_bx[40];
+  int e_nTau;
+  int u_tau_hwPt[40];
+  int u_tau_hwEta[40];
+  int u_tau_hwPhi[40];
+  int u_tau_bx[40];
+  int u_nTau;
 
-  emulatorResults->SetBranchAddress("hfring_hwPt",e_hfring_hwPt);
-  emulatorResults->SetBranchAddress("hfring_bx",e_hfring_bx);
-  emulatorResults->SetBranchAddress("nHfring",&e_nHfring);
-  unpackerResults->SetBranchAddress("hfring_hwPt",u_hfring_hwPt);
-  unpackerResults->SetBranchAddress("hfring_bx",u_hfring_bx);
-  unpackerResults->SetBranchAddress("nHfring",&u_nHfring);
+  emulatorResults->SetBranchAddress("tau_hwPt",e_tau_hwPt);
+  emulatorResults->SetBranchAddress("tau_hwEta",e_tau_hwEta);
+  emulatorResults->SetBranchAddress("tau_hwPhi",e_tau_hwPhi);
+  emulatorResults->SetBranchAddress("tau_bx",e_tau_bx);
+  emulatorResults->SetBranchAddress("nTau",&e_nTau);
+  unpackerResults->SetBranchAddress("tau_hwPt",u_tau_hwPt);
+  unpackerResults->SetBranchAddress("tau_hwEta",u_tau_hwEta);
+  unpackerResults->SetBranchAddress("tau_hwPhi",u_tau_hwPhi);
+  unpackerResults->SetBranchAddress("tau_bx",u_tau_bx);
+  unpackerResults->SetBranchAddress("nTau",&u_nTau);
 
   long misses = 0;
   long entries = emulatorResults->GetEntries();
@@ -42,13 +51,13 @@ void listMismatchedEvents(TString inputFile = "L1UnpackedPureEmulator.root")
     int e_offset = 0;
     int u_offset = 0;
 
-    if(e_nHfring == 1)
+    if(e_nTau == 4)
     {
       e_offset = 0;
     }
-    else if (e_nHfring == 5)
+    else if (e_nTau == 20)
     {
-      e_offset = 2;
+      e_offset = 8;
       continue;
     }
     else
@@ -58,13 +67,13 @@ void listMismatchedEvents(TString inputFile = "L1UnpackedPureEmulator.root")
       continue;
     }
 
-    if(u_nHfring == 1)
+    if(u_nTau == 4)
     {
       u_offset = 0;
     }
-    else if (u_nHfring == 5)
+    else if (u_nTau == 20)
     {
-      u_offset = 2;
+      u_offset = 8;
     }
     else
     {
@@ -74,16 +83,18 @@ void listMismatchedEvents(TString inputFile = "L1UnpackedPureEmulator.root")
     }
 
 
-    for(int j = 0; j < 1; j++)
+    for(int j = 0; j < 4; j++)
     {
-      if(e_hfring_hwPt[e_offset+j] != u_hfring_hwPt[u_offset+j])
-      {
-	//std::cout << "MISMATCHED EVENT:" <<std::endl;
-	std::cout << "\"" << run << ":" << lumi << ":" << event << "\"," << std::endl;
-	std::cout << "Emu: " << e_hfring_hwPt[e_offset+j] << " Unp: " << u_hfring_hwPt[u_offset+j] << std::endl;
-	misses++;
-	break;
-      }
+      //if(e_tau_hwPt[e_offset+j] > 0) {
+      if(((e_tau_hwPt[e_offset+j])) != ((u_tau_hwPt[u_offset+j])))
+	{
+	  //std::cout << "MISMATCHED EVENT:" <<std::endl;
+	  std::cout << std::dec << "" << run << ":" << lumi << ":" << event << "" << std::endl;
+
+	  misses++;
+	  break;
+	}
+	//}
     }
   }
   std::cout << "Misses: " << misses << std::endl;
