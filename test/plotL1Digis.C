@@ -22,7 +22,7 @@ void plotL1Digis(TString inputFile = "L1UnpackedPureEmulator.root")
   //unpackerResults->SetName("unp");
   unpackerResults->AddFriend(emulatorResults,"emu");
 
-  const int nHISTS = 25;
+  const int nHISTS = 28;
   TString labels[nHISTS] = {/*"region_et", "region_eta", "region_phi",
 			      "egcand_rank", "egcand_eta", "egcand_phi",*/
 			    "central_jet_hwPt", "central_jet_hwEta", "central_jet_hwPhi",
@@ -33,7 +33,7 @@ void plotL1Digis(TString inputFile = "L1UnpackedPureEmulator.root")
 			    "noniso_egamma_hwPt", "noniso_egamma_hwEta", "noniso_egamma_hwPhi",
 			    "tau_hwPt", "tau_hwEta", "tau_hwPhi",
 			    "isotau_hwPt", "isotau_hwEta", "isotau_hwPhi",
-			    "centrality"};
+			    "centrality_ring0", "centrality_ring1", "centrality_ring2", "centrality_ring3"};
 
   TString projectionnames[nHISTS] = {/*"legacyregion_et", "legacyregion_gctEta", "legacyregion_gctPhi",
 				       "legacyemcand_rank", "legacyemcand_regionEta", "legacyemcand_regionPhi",*/
@@ -45,7 +45,7 @@ void plotL1Digis(TString inputFile = "L1UnpackedPureEmulator.root")
 				     "egamma_hwPt", "egamma_hwEta", "egamma_hwPhi",
 				     "tau_hwPt", "tau_hwEta", "tau_hwPhi",
 				     "isotau_hwPt", "isotau_hwEta", "isotau_hwPhi",
-				     "hfring_hwPt"};
+				     "(hfring_hwPt&0x7)", "(hfring_hwPt>>3)&0x7", "(hfring_hwPt>>6)&0x7", "(hfring_hwPt>>9)&0x7"};
 
   TCut projectioncuts[nHISTS] = {/*"legacyregion_bx == 0", "legacyregion_bx == 0", "legacyregion_bx == 0",
 				   "legacyemcand_bx == 0", "legacyemcand_bx == 0", "legacyemcand_bx == 0",*/
@@ -57,7 +57,7 @@ void plotL1Digis(TString inputFile = "L1UnpackedPureEmulator.root")
 				 "egamma_hwIso==0", "egamma_hwIso==0", "egamma_hwIso==0",
 				 "", "", "",
 				 "", "", "",
-				 ""};
+				 "","","",""};
   TCut projectioncuts_unpacker[nHISTS] = {/*"", "", "",
 					    "", "", "",*/
 					  "jet_bx==0","jet_bx==0","jet_bx==0",
@@ -68,7 +68,7 @@ void plotL1Digis(TString inputFile = "L1UnpackedPureEmulator.root")
 					  "egamma_bx==0","egamma_bx==0","egamma_bx==0",
 					  "tau_bx==0", "tau_bx==0", "tau_bx==0",
 					  "isotau_bx==0","isotau_bx==0","isotau_bx==0",
-					  "hfring_bx==0"};
+					  "hfring_bx==0","hfring_bx==0","hfring_bx==0","hfring_bx==0"};
   Int_t minBin[nHISTS] = {/*0, 0, 0,
 			    0, 0, 0,*/
 			  0, 0, 0,
@@ -79,7 +79,7 @@ void plotL1Digis(TString inputFile = "L1UnpackedPureEmulator.root")
 			  0, 0, 0,
 			  0, 0, 0,
 			  0, 0, 0,
-			  0};
+			  0,0,0,0};
   Int_t maxBin[nHISTS] = {/*40, 22, 25,
 			    64, 22, 25,*/
 			  64,22,25,
@@ -90,7 +90,7 @@ void plotL1Digis(TString inputFile = "L1UnpackedPureEmulator.root")
 			  64, 22, 25,
 			  64, 22, 25,
 			  64, 25, 25,
-			  7};
+			  8,8,8,8};
 
   TH1I *hists[nHISTS][2];
   TH1D *divs[nHISTS];
