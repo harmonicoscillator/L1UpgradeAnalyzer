@@ -19,20 +19,6 @@ process.maxEvents = cms.untracked.PSet(
 process.source = cms.Source("PoolSource",
     secondaryFileNames = cms.untracked.vstring(),
                             fileNames = cms.untracked.vstring(
-                                #"file:/afs/cern.ch/user/r/richard/EMULATOR/HI_TESTING/txt_unpacking/CMSSW_7_5_2/src/EventFilter/L1TRawToDigi/utils/l1tCalo_2015_EDM.root"
-                                #"file:/afs/cern.ch/work/r/richard/public/HI_L1_FirmwareTesting/l1tCalo_EDM.root"
-                                #"file:/afs/cern.ch/work/r/richard/public/HI_L1_FirmwareTesting/l1tCalo_EDM_258158.root"
-                                #"file:/afs/cern.ch/user/r/richard/EMULATOR/HI_TESTING/txt_unpacking/CMSSW_7_5_2/src/EventFilter/L1TRawToDigi/utils/test7oct4PM_100HICentralEvents.root"
-                                #'file:/afs/cern.ch/work/r/richard/public/HI_L1_FirmwareTesting/RUN_258694/l1tCalo_EDM_258694_0.root',
-                                #'file:/afs/cern.ch/work/r/richard/public/HI_L1_FirmwareTesting/RUN_258694/l1tCalo_EDM_258694_1.root',
-                                #'file:/afs/cern.ch/work/r/richard/public/HI_L1_FirmwareTesting/RUN_258694/l1tCalo_EDM_258694_2.root',
-                                #'file:/afs/cern.ch/work/r/richard/public/HI_L1_FirmwareTesting/RUN_258694/l1tCalo_EDM_258694_3.root',
-                                #'file:/afs/cern.ch/work/r/richard/public/HI_L1_FirmwareTesting/RUN_258694/l1tCalo_EDM_258694_v2.root'
-                                #'file:/afs/cern.ch/work/r/richard/public/HI_L1_FirmwareTesting/RUN_259324/run259324_ls0001_streamPhysicsEGammaCommissioning_StorageManager.dat_Digis_numEvent10000.root'
-                                #'file:/afs/cern.ch/work/r/richard/public/HI_L1_FirmwareTesting/RUN_259352/l1tCalo_EDM_259352.root'
-                                #'file:/afs/cern.ch/work/r/richard/public/HI_L1_FirmwareTesting/RUN_259637/l1tCalo_EDM_259637.root'
-                                #'file:/afs/cern.ch/work/r/richard/public/HI_L1_FirmwareTesting/RUN_259637_centralityMismatches_unpacked.root'
-                                #'file:/afs/cern.ch/work/r/richard/public/HI_L1_FirmwareTesting/RUN_259818/RUN_259818_unpacked.root'
                                 "file:/afs/cern.ch/work/r/richard/public/HI_L1_FirmwareTesting/RUN_259818/run259818EgammaMismatches_100.root"
                             )
                             )
@@ -62,6 +48,8 @@ process.caloStage1Params.jetSeedThreshold = cms.double(0)
 process.caloStage1Params.etSumEtThreshold        = cms.vdouble(0., 7.) #ET, HT
 ### Minimum Bias thresholds
 process.caloStage1Params.minimumBiasThresholds = cms.vint32(4,4,6,6)
+### Centrality LUT
+process.caloStage1Params.centralityLUTFile = cms.FileInPath("L1Trigger/L1TCalorimeter/data/centrality_extended_LUT_preRun.txt")
 
 process.simRctUpgradeFormatDigis.emTag = cms.InputTag("caloStage1Digis")
 process.simRctUpgradeFormatDigis.regionTag = cms.InputTag("caloStage1Digis")
@@ -76,7 +64,7 @@ process.p1 = cms.Path(
     )
 
 process.TFileService = cms.Service("TFileService",
-                                   fileName = cms.string("L1UnpackedReEmulator_259818_v2.root")
+                                   fileName = cms.string("L1UnpackedReEmulator.root")
 )
 
 process.EmulatorResults = cms.EDAnalyzer('l1t::L1UpgradeAnalyzer',
@@ -84,6 +72,7 @@ process.EmulatorResults = cms.EDAnalyzer('l1t::L1UpgradeAnalyzer',
                                          InputLayer2TauCollection = cms.InputTag("simCaloStage1FinalDigis:rlxTaus"),
                                          InputLayer2IsoTauCollection = cms.InputTag("simCaloStage1FinalDigis:isoTaus"),
                                          InputLayer2CaloSpareCollection = cms.InputTag("simCaloStage1FinalDigis:HFRingSums"),
+                                         InputLayer2HFBitCountCollection = cms.InputTag("simCaloStage1FinalDigis:HFBitCounts"),
                                          InputLayer1Collection = cms.InputTag("None"),
                                          legacyRCTDigis = cms.InputTag("None")
 )
@@ -93,7 +82,8 @@ process.UnpackerResults = cms.EDAnalyzer('l1t::L1UpgradeAnalyzer',
                                          InputLayer2TauCollection = cms.InputTag("caloStage1Digis:rlxTaus"),
                                          InputLayer2IsoTauCollection = cms.InputTag("caloStage1Digis:isoTaus"),
                                          InputLayer2CaloSpareCollection = cms.InputTag("caloStage1Digis:HFRingSums"),
-                                         InputLayer1Collection = cms.InputTag("None"),
+                                         InputLayer2HFBitCountCollection = cms.InputTag("caloStage1Digis:HFBitCounts"),
+                                         InputLayer1Collection = cms.InputTag("simRctUpgradeFormatDigis"),
                                          legacyRCTDigis = cms.InputTag("caloStage1Digis")
 )
 

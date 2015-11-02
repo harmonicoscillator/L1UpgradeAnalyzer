@@ -37,6 +37,7 @@
 //#include <DataFormats/FEDRawData/interface/FEDHeader.h>
 //#include <DataFormats/FEDRawData/interface/FEDTrailer.h>
 //#include <DataFormats/FEDRawData/interface/FEDNumbering.h>
+#include <vector>
 
 
 #include "TTree.h"
@@ -55,6 +56,8 @@ namespace l1t {
       virtual void analyze(const edm::Event&, const edm::EventSetup&);
       virtual void endJob();
 
+      void clearAllGlobalVectors();
+
       //virtual void beginRun(edm::Run const&, edm::EventSetup const&) override;
       //virtual void endRun(edm::Run const&, edm::EventSetup const&) override;
       //virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
@@ -70,6 +73,7 @@ namespace l1t {
       edm::EDGetToken JetToken_;
       edm::EDGetToken EtSumToken_;
       edm::EDGetToken CaloSpareToken_;
+      edm::EDGetToken HFBitCountToken_;
 
       edm::EDGetToken RegionToken_;
       edm::EDGetToken EmCandToken_;
@@ -91,113 +95,125 @@ namespace l1t {
       int lumi;
 
       int nJet;
-      int *jet_hwPt;
-      int *jet_hwEta;
-      int *jet_hwPhi;
-      int *jet_hwQual;
-      int *jet_hwIso;
-      int *jet_bx;
+      std::vector<int> jet_hwPt;
+      std::vector<int> jet_hwEta;
+      std::vector<int> jet_hwPhi;
+      std::vector<int> jet_hwQual;
+      std::vector<int> jet_hwIso;
+      std::vector<int> jet_bx;
 
-      double *jet_pt;
-      double *jet_eta;
-      double *jet_phi;
+      std::vector<double> jet_pt;
+      std::vector<double> jet_eta;
+      std::vector<double> jet_phi;
 
       int nTau;
-      int *tau_hwPt;
-      int *tau_hwEta;
-      int *tau_hwPhi;
-      int *tau_hwQual;
-      int *tau_hwIso;
-      int *tau_bx;
+      std::vector<int> tau_hwPt;
+      std::vector<int> tau_hwEta;
+      std::vector<int> tau_hwPhi;
+      std::vector<int> tau_hwQual;
+      std::vector<int> tau_hwIso;
+      std::vector<int> tau_bx;
 
-      double *tau_pt;
-      double *tau_eta;
-      double *tau_phi;
+      std::vector<double> tau_pt;
+      std::vector<double> tau_eta;
+      std::vector<double> tau_phi;
 
       int nIsotau;
-      int *isotau_hwPt;
-      int *isotau_hwEta;
-      int *isotau_hwPhi;
-      int *isotau_hwQual;
-      int *isotau_hwIso;
-      int *isotau_bx;
+      std::vector<int> isotau_hwPt;
+      std::vector<int> isotau_hwEta;
+      std::vector<int> isotau_hwPhi;
+      std::vector<int> isotau_hwQual;
+      std::vector<int> isotau_hwIso;
+      std::vector<int> isotau_bx;
 
-      double *isotau_pt;
-      double *isotau_eta;
-      double *isotau_phi;
+      std::vector<double> isotau_pt;
+      std::vector<double> isotau_eta;
+      std::vector<double> isotau_phi;
 
       int nEgamma;
-      int *egamma_hwPt;
-      int *egamma_hwEta;
-      int *egamma_hwPhi;
-      int *egamma_hwQual;
-      int *egamma_hwIso;
-      int *egamma_bx;
+      std::vector<int> egamma_hwPt;
+      std::vector<int> egamma_hwEta;
+      std::vector<int> egamma_hwPhi;
+      std::vector<int> egamma_hwQual;
+      std::vector<int> egamma_hwIso;
+      std::vector<int> egamma_bx;
 
-      double *egamma_pt;
-      double *egamma_eta;
-      double *egamma_phi;
+      std::vector<double> egamma_pt;
+      std::vector<double> egamma_eta;
+      std::vector<double> egamma_phi;
 
       int nEtsum;
-      int *etsum_hwPt;
-      int *etsum_hwEta;
-      int *etsum_hwPhi;
-      int *etsum_hwQual;
-      int *etsum_hwIso;
-      int *etsum_type;
-      int *etsum_bx;
+      std::vector<int> etsum_hwPt;
+      std::vector<int> etsum_hwEta;
+      std::vector<int> etsum_hwPhi;
+      std::vector<int> etsum_hwQual;
+      std::vector<int> etsum_hwIso;
+      std::vector<int> etsum_type;
+      std::vector<int> etsum_bx;
 
-      double *etsum_pt;
-      double *etsum_eta;
-      double *etsum_phi;
+      std::vector<double> etsum_pt;
+      std::vector<double> etsum_eta;
+      std::vector<double> etsum_phi;
 
       int nHfring;
-      int *hfring_hwPt;
-      int *hfring_hwEta;
-      int *hfring_hwPhi;
-      int *hfring_hwQual;
-      int *hfring_hwIso;
-      int *hfring_bx;
+      std::vector<int> hfring_hwPt;
+      std::vector<int> hfring_hwEta;
+      std::vector<int> hfring_hwPhi;
+      std::vector<int> hfring_hwQual;
+      std::vector<int> hfring_hwIso;
+      std::vector<int> hfring_bx;
 
-      double *hfring_pt;
-      double *hfring_eta;
-      double *hfring_phi;
+      std::vector<double> hfring_pt;
+      std::vector<double> hfring_eta;
+      std::vector<double> hfring_phi;
+
+      int nHfbits;
+      std::vector<int> hfbits_hwPt;
+      std::vector<int> hfbits_hwEta;
+      std::vector<int> hfbits_hwPhi;
+      std::vector<int> hfbits_hwQual;
+      std::vector<int> hfbits_hwIso;
+      std::vector<int> hfbits_bx;
+
+      std::vector<double> hfbits_pt;
+      std::vector<double> hfbits_eta;
+      std::vector<double> hfbits_phi;
 
       int nRegions;
-      int *region_hwPt;
-      int *region_hwEta;
-      int *region_hwPhi;
-      int *region_tauVeto;
-      int *region_bx;
+      std::vector<int> region_hwPt;
+      std::vector<int> region_hwEta;
+      std::vector<int> region_hwPhi;
+      std::vector<int> region_tauVeto;
+      std::vector<int> region_bx;
 
       int nEMCands;
-      int *emcand_hwPt;
-      int *emcand_hwEta;
-      int *emcand_hwPhi;
-      int *emcand_hwIso;
-      int *emcand_hwQual;
-      int *emcand_bx;
+      std::vector<int> emcand_hwPt;
+      std::vector<int> emcand_hwEta;
+      std::vector<int> emcand_hwPhi;
+      std::vector<int> emcand_hwIso;
+      std::vector<int> emcand_hwQual;
+      std::vector<int> emcand_bx;
 
       int nLegacyRegions;
-      int *legacyregion_raw;
-      int *legacyregion_et;
-      int *legacyregion_gctEta;
-      int *legacyregion_gctPhi;
-      int *legacyregion_crate;
-      int *legacyregion_card;
-      int *legacyregion_index;
-      int *legacyregion_bx;
+      std::vector<int> legacyregion_raw;
+      std::vector<int> legacyregion_et;
+      std::vector<int> legacyregion_gctEta;
+      std::vector<int> legacyregion_gctPhi;
+      std::vector<int> legacyregion_crate;
+      std::vector<int> legacyregion_card;
+      std::vector<int> legacyregion_index;
+      std::vector<int> legacyregion_bx;
 
       int nLegacyEmCands;
-      int *legacyemcand_raw;
-      int *legacyemcand_rank;
-      int *legacyemcand_regionEta;
-      int *legacyemcand_regionPhi;
-      int *legacyemcand_crate;
-      int *legacyemcand_card;
-      int *legacyemcand_index;
-      int *legacyemcand_iso;
-      int *legacyemcand_bx;
+      std::vector<int> legacyemcand_raw;
+      std::vector<int> legacyemcand_rank;
+      std::vector<int> legacyemcand_regionEta;
+      std::vector<int> legacyemcand_regionPhi;
+      std::vector<int> legacyemcand_crate;
+      std::vector<int> legacyemcand_card;
+      std::vector<int> legacyemcand_index;
+      std::vector<int> legacyemcand_iso;
+      std::vector<int> legacyemcand_bx;
 
   };
 }
