@@ -6,8 +6,16 @@
 #include "TTree.h"
 #include <iostream>
 #include <bitset>
+#include <TString.h>
 
-void listMismatchedEvents(TString inputFile = "L1UnpackedPureEmulator.root")
+enum testObject{
+  Jets=0,
+  EGammas=1,
+  Taus=2,
+  Centrality=3
+};
+
+void listMismatchedEvents(TString inputFile = "L1UnpackedPureEmulator.root", testObject type = Jets)
 {
   TFile *inFile = TFile::Open(inputFile);
   TTree *emulatorResults = (TTree*)inFile->Get("EmulatorResults/L1UpgradeTree");
@@ -19,27 +27,52 @@ void listMismatchedEvents(TString inputFile = "L1UnpackedPureEmulator.root")
   emulatorResults->SetBranchAddress("run",&run);
   emulatorResults->SetBranchAddress("lumi",&lumi);
 
-  std::vector<int> *e_tau_hwPt =0;
-  std::vector<int> *e_tau_hwEta =0;
-  std::vector<int> *e_tau_hwPhi =0;
-  std::vector<int> *e_tau_bx =0;
-  int e_nTau;
-  std::vector<int> *u_tau_hwPt =0;
-  std::vector<int> *u_tau_hwEta =0;
-  std::vector<int> *u_tau_hwPhi =0;
-  std::vector<int> *u_tau_bx =0;
-  int u_nTau;
+  std::vector<int> *e_hwPt =0;
+  std::vector<int> *e_hwEta =0;
+  std::vector<int> *e_hwPhi =0;
+  std::vector<int> *e_bx =0;
+  int e_N;
+  std::vector<int> *u_hwPt =0;
+  std::vector<int> *u_hwEta =0;
+  std::vector<int> *u_hwPhi =0;
+  std::vector<int> *u_bx =0;
+  int u_N;
 
-  emulatorResults->SetBranchAddress("tau_hwPt",&e_tau_hwPt);
-  emulatorResults->SetBranchAddress("tau_hwEta",&e_tau_hwEta);
-  emulatorResults->SetBranchAddress("tau_hwPhi",&e_tau_hwPhi);
-  emulatorResults->SetBranchAddress("tau_bx",&e_tau_bx);
-  emulatorResults->SetBranchAddress("nTau",&e_nTau);
-  unpackerResults->SetBranchAddress("tau_hwPt",&u_tau_hwPt);
-  unpackerResults->SetBranchAddress("tau_hwEta",&u_tau_hwEta);
-  unpackerResults->SetBranchAddress("tau_hwPhi",&u_tau_hwPhi);
-  unpackerResults->SetBranchAddress("tau_bx",&u_tau_bx);
-  unpackerResults->SetBranchAddress("nTau",&u_nTau);
+  TString prefix;
+  TString nPrefix;
+  switch(type) {
+  case Jets:
+    prefix = "jet";
+    nPrefix = "Jet";
+    break;
+  case EGammas:
+    prefix = "egamma";
+    nPrefix = "Egamma";
+    break;
+  case Taus:
+    prefix = "tau";
+    nPrefix = "Tau";
+    break;
+  case Centrality:
+    prefix = "hfring";
+    nPrefix = "Hfring";
+    break;
+  default:
+    prefix = "jet";
+    nPrefix = "Jet";
+    break;
+  }
+
+  emulatorResults->SetBranchAddress(prefix + "_hwPt",&e_hwPt);
+  emulatorResults->SetBranchAddress(prefix + "_hwEta",&e_hwEta);
+  emulatorResults->SetBranchAddress(prefix + "_hwPhi",&e_hwPhi);
+  emulatorResults->SetBranchAddress(prefix + "_bx",&e_bx);
+  emulatorResults->SetBranchAddress("n"+nPrefix,&e_N);
+  unpackerResults->SetBranchAddress(prefix + "_hwPt",&u_hwPt);
+  unpackerResults->SetBranchAddress(prefix + "_hwEta",&u_hwEta);
+  unpackerResults->SetBranchAddress(prefix + "_hwPhi",&u_hwPhi);
+  unpackerResults->SetBranchAddress(prefix + "_bx",&u_bx);
+  unpackerResults->SetBranchAddress("n"+nPrefix,&u_N);
 
   long misses = 0;
   long entries = emulatorResults->GetEntries();
@@ -51,30 +84,41 @@ void listMismatchedEvents(TString inputFile = "L1UnpackedPureEmulator.root")
     int e_offset = 0;
     int u_offset = 0;
 
-    if(e_nTau == 4)
+    // e_offset will always be 0, but make sure that we are not one of the
+    // 1/100 events with multiple RCT BX.
+    // there are 4 taus per event, 8 jets, 8 egammas, and 1 centrality
+    if(e_N == 4)
     {
       e_offset = 0;
     }
-    else if (e_nTau == 20)
+    else if (e_N == 8)
     {
-      e_offset = 8;
-      continue;
+      e_offset = 0;
+    }
+    else if (e_N == 1)
+    {
+      e_offset = 0;
     }
     else
     {
-      std::cout << "ERROR, UNKNOWN BX" << std::endl;
-      std::cout << "Event: " << event << std::endl;
+      // there are multiple BX here and I don't know the alignment
+      // skip the event
       continue;
     }
 
-    if(u_nTau == 4)
+    // there are 20 taus per events, 40 jets, 40 egammas, and 5 centralities because of extra BX
+    if (u_N == 5)
     {
-      u_offset = 0;
+      u_offset = 2;
     }
-    else if (u_nTau == 20)
+    else if (u_N == 20)
     {
       u_offset = 8;
     }
+    else if (u_N == 40)
+    {
+      u_offset = 16;
+    }
     else
     {
       std::cout << "ERROR, UNKNOWN BX" << std::endl;
@@ -83,14 +127,13 @@ void listMismatchedEvents(TString inputFile = "L1UnpackedPureEmulator.root")
     }
 
 
-    for(int j = 0; j < 4; j++)
+    for(int j = 0; j < e_N; j++)
     {
-      //if(e_tau_hwPt[e_offset+j] > 0) {
-      if((((*e_tau_hwPt)[e_offset+j])) != (((*u_tau_hwPt)[u_offset+j])))
+      //if(e_hwPt[e_offset+j] > 0) {
+      if((((*e_hwPt)[e_offset+j])) != (((*u_hwPt)[u_offset+j])))
 	{
-	  //std::cout << "MISMATCHED EVENT:" <<std::endl;
 	  std::cout << std::dec << "" << run << ":" << lumi << ":" << event << "" << std::endl;
-	  std::cout << std::dec << (*e_tau_hwPt)[e_offset+j] << " " << (*u_tau_hwPt)[u_offset+j] << std::endl;
+	  //std::cout << std::dec << (*e_hwPt)[e_offset+j] << " " << (*u_hwPt)[u_offset+j] << std::endl;
 
 	  misses++;
 	  break;
@@ -103,9 +146,9 @@ void listMismatchedEvents(TString inputFile = "L1UnpackedPureEmulator.root")
 
 int main(int argc, char **argv)
 {
-  if(argc == 2)
+  if(argc == 3)
   {
-    listMismatchedEvents(argv[1]);
+    listMismatchedEvents(argv[1], (testObject)atoi(argv[2]));
     return 0;
   } else {
     return 1;
