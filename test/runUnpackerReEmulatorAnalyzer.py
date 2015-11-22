@@ -19,7 +19,26 @@ process.maxEvents = cms.untracked.PSet(
 process.source = cms.Source("PoolSource",
     secondaryFileNames = cms.untracked.vstring(),
                             fileNames = cms.untracked.vstring(
-                                "file:/afs/cern.ch/work/r/richard/public/HI_L1_FirmwareTesting/RUN_259818/run259818EgammaMismatches_100.root"
+                                "/store/express/Run2015E/HIExpressPhysics/FEVT/Express-v1/000/262/296/00000/0037C0FF-2691-E511-855D-02163E011BC2.root",
+"/store/express/Run2015E/HIExpressPhysics/FEVT/Express-v1/000/262/296/00000/0E9ECE70-2891-E511-BC9C-02163E014133.root",
+"/store/express/Run2015E/HIExpressPhysics/FEVT/Express-v1/000/262/296/00000/146745D1-2791-E511-B7E7-02163E0141C0.root",
+"/store/express/Run2015E/HIExpressPhysics/FEVT/Express-v1/000/262/296/00000/30417A4C-2791-E511-97DA-02163E014186.root",
+"/store/express/Run2015E/HIExpressPhysics/FEVT/Express-v1/000/262/296/00000/4234B736-2891-E511-807E-02163E01458B.root",
+"/store/express/Run2015E/HIExpressPhysics/FEVT/Express-v1/000/262/296/00000/4ADEFD61-2791-E511-84E2-02163E01446D.root",
+"/store/express/Run2015E/HIExpressPhysics/FEVT/Express-v1/000/262/296/00000/5ECDE1DF-2691-E511-8D69-02163E014178.root",
+"/store/express/Run2015E/HIExpressPhysics/FEVT/Express-v1/000/262/296/00000/64D20DB8-2691-E511-A9E2-02163E014285.root",
+"/store/express/Run2015E/HIExpressPhysics/FEVT/Express-v1/000/262/296/00000/745CCFC5-2691-E511-B680-02163E014127.root",
+"/store/express/Run2015E/HIExpressPhysics/FEVT/Express-v1/000/262/296/00000/9826FCBD-2791-E511-889E-02163E01454A.root",
+"/store/express/Run2015E/HIExpressPhysics/FEVT/Express-v1/000/262/296/00000/B41CF1C5-2791-E511-9AEB-02163E014146.root",
+"/store/express/Run2015E/HIExpressPhysics/FEVT/Express-v1/000/262/296/00000/BC78B4DF-2791-E511-996A-02163E0141A9.root",
+"/store/express/Run2015E/HIExpressPhysics/FEVT/Express-v1/000/262/296/00000/D49A6CFD-2691-E511-8801-02163E0144E7.root",
+"/store/express/Run2015E/HIExpressPhysics/FEVT/Express-v1/000/262/296/00000/D6EC84E0-2791-E511-9BBF-02163E0141AE.root",
+"/store/express/Run2015E/HIExpressPhysics/FEVT/Express-v1/000/262/296/00000/DCDC2F20-2991-E511-82D5-02163E014644.root",
+"/store/express/Run2015E/HIExpressPhysics/FEVT/Express-v1/000/262/296/00000/E8E7122D-2791-E511-B2C7-02163E012148.root",
+"/store/express/Run2015E/HIExpressPhysics/FEVT/Express-v1/000/262/296/00000/FA37E0CB-2691-E511-B503-02163E014480.root",
+"/store/express/Run2015E/HIExpressPhysics/FEVT/Express-v1/000/262/296/00000/FAE312FC-2691-E511-B034-02163E0143C4.root",
+"/store/express/Run2015E/HIExpressPhysics/FEVT/Express-v1/000/262/296/00000/FE06483E-2991-E511-A214-02163E014438.root",
+
                             )
                             )
 
@@ -30,31 +49,15 @@ from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_data', '')
 
 process.load('L1Trigger.L1TCalorimeter.caloConfigStage1HI_cfi')
-process.load('L1Trigger.L1TCalorimeter.L1TCaloStage1_HIFromRaw_cff')
-
-### nominal
-### PUS mask
-process.caloStage1Params.jetRegionMask = cms.int32(0b0000100000000000010000)
-#process.caloStage1Params.jetRegionMask = cms.int32(0)
-### EG 'iso' (eta) mask
-process.caloStage1Params.egEtaCut = cms.int32(0b0000001111111111000000)
-### Single track eta mask
-process.caloStage1Params.tauRegionMask = cms.int32(0b1111111100000011111111)
-### Centrality eta mask
-process.caloStage1Params.centralityRegionMask = cms.int32(0b0000111111111111110000)
-### jet seed threshold for 3x3 step of jet finding
-process.caloStage1Params.jetSeedThreshold = cms.double(0)
-### HTT settings (this won't match anyway yet)
-process.caloStage1Params.etSumEtThreshold        = cms.vdouble(0., 7.) #ET, HT
-### Minimum Bias thresholds
-process.caloStage1Params.minimumBiasThresholds = cms.vint32(4,4,6,6)
-### Centrality LUT
-process.caloStage1Params.centralityLUTFile = cms.FileInPath("L1Trigger/L1TCalorimeter/data/centrality_extended_LUT_preRun.txt")
+process.load('L1Trigger.L1TCalorimeter.L1TCaloStage1_cff')
+process.load('L1Trigger.L1TCalorimeter.caloStage1Params_HI_cfi')
+process.caloStage1Params.minimumBiasThresholds = cms.vint32(1,1,2,2)
 
 process.simRctUpgradeFormatDigis.emTag = cms.InputTag("caloStage1Digis")
 process.simRctUpgradeFormatDigis.regionTag = cms.InputTag("caloStage1Digis")
 
 process.load('EventFilter.L1TRawToDigi.caloStage1Digis_cfi')
+process.caloStage1Digis.InputLabel = cms.InputTag("rawDataRepacker")
 
 process.p1 = cms.Path(
     process.caloStage1Digis +
