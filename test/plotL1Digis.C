@@ -22,9 +22,9 @@ void plotL1Digis(TString inputFile = "L1UnpackedPureEmulator.root")
   //unpackerResults->SetName("unp");
   unpackerResults->AddFriend(emulatorResults,"emu");
 
-  const int nHISTS = 32;
-  TString labels[nHISTS] = {/*"region_et", "region_eta", "region_phi",
-			      "egcand_rank", "egcand_eta", "egcand_phi",*/
+  const int nHISTS = 38;
+  TString labels[nHISTS] = {"region_et", "region_eta", "region_phi",
+			    "egcand_rank", "egcand_eta", "egcand_phi",
 			    "central_jet_hwPt", "central_jet_hwEta", "central_jet_hwPhi",
 			    "forward_jet_hwPt", "forward_jet_hwEta", "forward_jet_hwPhi",
 			    "ETT", "HTT",
@@ -36,8 +36,8 @@ void plotL1Digis(TString inputFile = "L1UnpackedPureEmulator.root")
 			    "centrality_ring0", "centrality_ring1", "centrality_ring2", "centrality_ring3",
 			    "hfbits_ring0", "hfbits_ring1", "hfbits_ring2", "hfbits_ring3"};
 
-  TString projectionnames[nHISTS] = {/*"legacyregion_et", "legacyregion_gctEta", "legacyregion_gctPhi",
-				       "legacyemcand_rank", "legacyemcand_regionEta", "legacyemcand_regionPhi",*/
+  TString projectionnames[nHISTS] = {"legacyregion_et", "legacyregion_gctEta", "legacyregion_gctPhi",
+				     "legacyemcand_rank", "legacyemcand_regionEta", "legacyemcand_regionPhi",
 				     "jet_hwPt", "jet_hwEta", "jet_hwPhi",
 				     "jet_hwPt", "jet_hwEta", "jet_hwPhi",
 				     "etsum_hwPt", "etsum_hwPt",
@@ -49,8 +49,8 @@ void plotL1Digis(TString inputFile = "L1UnpackedPureEmulator.root")
 				     "(hfring_hwPt&0x7)", "(hfring_hwPt>>3)&0x7", "(hfring_hwPt>>6)&0x7", "(hfring_hwPt>>9)&0x7",
 				     "(hfbits_hwPt&0x7)", "(hfbits_hwPt>>3)&0x7", "(hfbits_hwPt>>6)&0x7", "(hfbits_hwPt>>9)&0x7"};
 
-  TCut projectioncuts[nHISTS] = {/*"legacyregion_bx == 0", "legacyregion_bx == 0", "legacyregion_bx == 0",
-				   "legacyemcand_bx == 0", "legacyemcand_bx == 0", "legacyemcand_bx == 0",*/
+  TCut projectioncuts[nHISTS] = {"legacyregion_bx == 0", "legacyregion_bx == 0", "legacyregion_bx == 0",
+				 "legacyemcand_bx == 0", "legacyemcand_bx == 0", "legacyemcand_bx == 0",
 				 "(jet_hwQual&0x2)!=0x2","(jet_hwQual&0x2)!=0x2","(jet_hwQual&0x2)!=0x2",
 				 "(jet_hwQual&0x2)==0x2","(jet_hwQual&0x2)==0x2","(jet_hwQual&0x2)==0x2",
 				 "etsum_type==0","etsum_type==1",
@@ -61,8 +61,8 @@ void plotL1Digis(TString inputFile = "L1UnpackedPureEmulator.root")
 				 "", "", "",
 				 "","","","",
 				 "","","",""};
-  TCut projectioncuts_unpacker[nHISTS] = {/*"", "", "",
-					    "", "", "",*/
+  TCut projectioncuts_unpacker[nHISTS] = {"", "", "",
+					  "", "", "",
 					  "jet_bx==0","jet_bx==0","jet_bx==0",
 					  "jet_bx==0","jet_bx==0","jet_bx==0",
 					  "etsum_bx==0","etsum_bx==0",
@@ -73,8 +73,8 @@ void plotL1Digis(TString inputFile = "L1UnpackedPureEmulator.root")
 					  "isotau_bx==0","isotau_bx==0","isotau_bx==0",
 					  "hfring_bx==0","hfring_bx==0","hfring_bx==0","hfring_bx==0",
 					  "hfbits_bx==0","hfbits_bx==0","hfbits_bx==0","hfbits_bx==0"};
-  Int_t minBin[nHISTS] = {/*0, 0, 0,
-			    0, 0, 0,*/
+  Int_t minBin[nHISTS] = {0, 0, 0,
+			  0, 0, 0,
 			  0, 0, 0,
 			  0, 0, 0,
 			  0, 0,
@@ -85,8 +85,8 @@ void plotL1Digis(TString inputFile = "L1UnpackedPureEmulator.root")
 			  0, 0, 0,
 			  0,0,0,0,
 			  0,0,0,0};
-  Int_t maxBin[nHISTS] = {/*40, 22, 25,
-			    64, 22, 25,*/
+  Int_t maxBin[nHISTS] = {1024, 22, 18,
+			  64, 22, 18,
 			  64,22,25,
 			  64,22,25,
 			  600, 300,

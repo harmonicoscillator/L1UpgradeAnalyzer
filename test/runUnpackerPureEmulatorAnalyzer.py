@@ -12,15 +12,21 @@ process.load('Configuration.Geometry.GeometryIdeal_cff')
 process.load('FWCore.MessageService.MessageLogger_cfi')
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(-1)
+    input = cms.untracked.int32(1)
     )
 
 # Input source
 process.source = cms.Source("PoolSource",
     secondaryFileNames = cms.untracked.vstring(),
                             fileNames = cms.untracked.vstring(
-                                #"file:/afs/cern.ch/work/r/richard/public/HI_L1_FirmwareTesting/RUNS_260350_260422-260433/mismatches.root"
-                                "file:/afs/cern.ch/work/r/richard/public/HI_L1_FirmwareTesting/RUN_260232/RUN_260232_jetMismatch.root"
+                                #"/store/relval/CMSSW_7_5_8_patch2/RelValPhotonJets_Pt_10_13_HI/GEN-SIM-DIGI-RAW-HLTDEBUG/PU_75X_mcRun2_HeavyIon_v12-v1/00000/002B568D-54B5-E511-90DB-00266CFAE074.root",
+                                #"/store/relval/CMSSW_7_5_8_patch2/RelValPhotonJets_Pt_10_13_HI/GEN-SIM-DIGI-RAW-HLTDEBUG/PU_75X_mcRun2_HeavyIon_v12-v1/00000/20FA8A7F-52B5-E511-9319-7845C4FC3893.root",
+                                #"/store/relval/CMSSW_7_5_8_patch2/RelValPhotonJets_Pt_10_13_HI/GEN-SIM-DIGI-RAW-HLTDEBUG/PU_75X_mcRun2_HeavyIon_v12-v1/00000/3E322ED5-53B5-E511-A3BD-00266CF268B8.root",
+                                #"/store/relval/CMSSW_7_5_8_patch2/RelValPhotonJets_Pt_10_13_HI/GEN-SIM-DIGI-RAW-HLTDEBUG/PU_75X_mcRun2_HeavyIon_v12-v1/00000/90D27128-52B5-E511-A90E-7845C4FC399E.root"
+                                "/store/relval/CMSSW_7_5_8_patch2/RelValPhotonJets_Pt_10_5020GeV/GEN-SIM-DIGI-RAW-HLTDEBUG/75X_mcRun2_asymptotic_ppAt5TeV_v3-v1/00000/063E58E3-4CB5-E511-B142-7845C4FC3B8A.root",
+                                "/store/relval/CMSSW_7_5_8_patch2/RelValPhotonJets_Pt_10_5020GeV/GEN-SIM-DIGI-RAW-HLTDEBUG/75X_mcRun2_asymptotic_ppAt5TeV_v3-v1/00000/80F17F87-4EB5-E511-99F5-3417EBE528B2.root",
+                                "/store/relval/CMSSW_7_5_8_patch2/RelValPhotonJets_Pt_10_5020GeV/GEN-SIM-DIGI-RAW-HLTDEBUG/75X_mcRun2_asymptotic_ppAt5TeV_v3-v1/00000/F0C3C7CB-4DB5-E511-A423-001D09FDD80D.root"
+
                             )
                             )
 
@@ -28,40 +34,47 @@ process.options = cms.untracked.PSet()
 
 # Other statements
 from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_data', '')
+# recordOverrides = { ('L1TCaloParamsRcd', None) : ('L1TCaloParams_collisions_HI_v0_mc', None) }
+# process.GlobalTag = GlobalTag(process.GlobalTag, '75X_mcRun2_HeavyIon_v12', recordOverrides)
+# process.GlobalTag.snapshotTime = cms.string("9999-12-31 23:59:59.000")
+process.GlobalTag = GlobalTag(process.GlobalTag, '75X_mcRun2_asymptotic_ppAt5TeV_v3', '')
+
+#process.load('L1Trigger.L1TCalorimeter.caloConfigStage1PP_cfi')
+#process.load('L1Trigger.L1TCalorimeter.L1TCaloStage1_cff')
+#process.load('L1Trigger.L1TCalorimeter.caloStage1Params_cfi')
+#process.load('L1Trigger.L1TCalorimeter.caloStage1Params_HI_cfi')
+#process.caloStage1Params.minimumBiasThresholds = cms.vint32(1,1,2,2)
+
+process.load('Configuration.StandardSequences.RawToDigi_Data_cff')
+from L1Trigger.Configuration.SimL1Emulator_cff import simRctDigis
+process.simRctDigis = simRctDigis
+process.simRctDigis.ecalDigis = cms.VInputTag( cms.InputTag( 'ecalDigis:EcalTriggerPrimitives' ) )
+#process.simRctDigis.hcalDigis = cms.VInputTag( cms.InputTag( 'simHcalTriggerPrimitiveDigis' ) )
+process.simRctDigis.hcalDigis = cms.VInputTag( cms.InputTag( 'hcalDigis' ) )
+
+#process.simRctUpgradeFormatDigis.emTag = cms.InputTag("caloStage1Digis")
+#process.simRctUpgradeFormatDigis.regionTag = cms.InputTag("caloStage1Digis")
 
 process.load('EventFilter.L1TRawToDigi.caloStage1Digis_cfi')
+#process.caloStage1Digis.InputLabel = cms.InputTag("rawDataRepacker")
 
-process.load('L1Trigger.L1TCalorimeter.caloConfigStage1HI_cfi')
-process.load('L1Trigger.L1TCalorimeter.L1TCaloStage1_PPFromRaw_cff')
-
-### nominal
-process.load('L1Trigger.L1TCalorimeter.caloStage1Params_cfi')
-### PUS mask
-process.caloStage1Params.jetRegionMask = cms.int32(0b0000100000000000010000)
-#process.caloStage1Params.jetRegionMask = cms.int32(0)
-### EG 'iso' (eta) mask
-process.caloStage1Params.egEtaCut = cms.int32(0b0000001111111111000000)
-### Single track eta mask
-process.caloStage1Params.tauRegionMask = cms.int32(0b1111111100000011111111)
-### Centrality eta mask
-process.caloStage1Params.centralityRegionMask = cms.int32(0b0000111111111111110000)
-### jet seed threshold for 3x3 step of jet finding
-process.caloStage1Params.jetSeedThreshold = cms.double(0)
-### HTT settings (this won't match anyway yet)
-process.caloStage1Params.etSumEtThreshold        = cms.vdouble(0., 7.) #ET, HT
-### Minimum Bias thresholds
-process.caloStage1Params.minimumBiasThresholds = cms.vint32(4,4,6,6)
-### Centrality LUT
-process.caloStage1Params.centralityLUTFile = cms.FileInPath("L1Trigger/L1TCalorimeter/data/centrality_extended_LUT_preRun.txt")
+process.l1cpr = cms.EDAnalyzer("L1TCaloParamsViewer")
+process.l1RCTParametersTest = cms.EDAnalyzer("L1RCTParametersTester")
 
 process.p1 = cms.Path(
-    process.L1TCaloStage1_PPFromRaw +
-    process.caloStage1Digis
+    #process.l1cpr +
+    process.l1RCTParametersTest 
+#    process.ecalDigis +
+#    process.hcalDigis +
+#    process.caloStage1Digis +
+#    process.simRctDigis +
+#    process.simRctUpgradeFormatDigis +
+#    process.simCaloStage1Digis +
+#    process.simCaloStage1FinalDigis
     )
 
 process.TFileService = cms.Service("TFileService",
-                                   fileName = cms.string("L1UnpackedPureEmulator.root")
+                                   fileName = cms.string("L1UnpackedReEmulator.root")
 )
 
 process.EmulatorResults = cms.EDAnalyzer('l1t::L1UpgradeAnalyzer',
